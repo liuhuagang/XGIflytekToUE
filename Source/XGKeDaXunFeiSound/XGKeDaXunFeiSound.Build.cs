@@ -44,6 +44,10 @@ public class XGKeDaXunFeiSound : ModuleRules
                 "AudioMixer",
                 "SignalProcessing",
                 "AudioCapture",
+				"Json",
+                "DeveloperSettings",
+                "JsonUtilities",
+
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

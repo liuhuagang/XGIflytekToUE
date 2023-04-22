@@ -3,7 +3,7 @@
 
 #include "Core/XGKeDaXunFeiSocketSubsystem.h"
 #include "WebSocketsModule.h"
-#include "Type/XGAppInformation.h"
+#include "Type/XGKeDaXunFeiSoundSettings.h"
 
 bool UXGKeDaXunFeiSocketSubsystem::bSending = false;
 TSharedPtr<IWebSocket> UXGKeDaXunFeiSocketSubsystem::Socket = {};
@@ -14,16 +14,16 @@ bool UXGKeDaXunFeiSocketSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 
 void UXGKeDaXunFeiSocketSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	Appid = FXGAppInformation::Appid;
-	APIKey = FXGAppInformation::APIKey;
+	Appid = UXGKeDaXunFeiSoundSettings::GetDataBaseSettings()->Appid;
+	APIKey = UXGKeDaXunFeiSoundSettings::GetDataBaseSettings()->APIKey;
 
 
 
 	FConsumeSoundRunnable* Runnable1 = new FConsumeSoundRunnable(TEXT("线程1"));
-	FConsumeSoundRunnable* Runnable2 = new FConsumeSoundRunnable(TEXT("线程2"));
+//	FConsumeSoundRunnable* Runnable2 = new FConsumeSoundRunnable(TEXT("线程2"));
 	FRunnableThread* RunnableThread1 = FRunnableThread::Create(Runnable1, *Runnable1->MyThreadName);
-	FRunnableThread* RunnableThread2 = FRunnableThread::Create(Runnable2, *Runnable2->MyThreadName);
-	Runnable2->Stop();
+//	FRunnableThread* RunnableThread2 = FRunnableThread::Create(Runnable2, *Runnable2->MyThreadName);
+//	Runnable2->Stop();
 
 }
 
@@ -87,8 +87,10 @@ void UXGKeDaXunFeiSocketSubsystem::CreateSocket()
 
 	ServerURL += TEXT("&");
 	ServerURL += TEXT("pd=edu");
+	
 
-
+	ServerURL += TEXT("&lang=cn&transType=normal&transStrategy=2&targetLang=en");
+	//ServerURL += TEXT("&transStrategy=3");
 
 	Socket = FWebSocketsModule::Get().CreateWebSocket(ServerURL, ServerProtocol);
 	Socket->OnConnected().AddUObject(this, &UXGKeDaXunFeiSocketSubsystem::OnConnected);
@@ -124,7 +126,6 @@ void UXGKeDaXunFeiSocketSubsystem::SendVoiceData(const float* InAudio, int32 Num
 
 		TArray<int16> ToChangeAuidoData;
 		TArray<uint8> BinaryDataToSend;
-	//	int32 j = 0;
 		int32 i = 0;
 		for (; i < 1024;)
 		{	//-1.0~1.0
@@ -143,8 +144,6 @@ void UXGKeDaXunFeiSocketSubsystem::SendVoiceData(const float* InAudio, int32 Num
 			BinaryDataToSend.Add(Bytes[1]);
 
 			i++;
-	//		j = j + 2;
-
 		}
 
 		Socket->Send(BinaryDataToSend.GetData(), BinaryDataToSend.Num(),false);
@@ -182,7 +181,57 @@ void UXGKeDaXunFeiSocketSubsystem::OnClosed(int32 StatusCode, const FString& Rea
 
 void UXGKeDaXunFeiSocketSubsystem::OnMessage(const FString& Message)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s Message:%s"), *FString(__FUNCTION__), *Message);
+//	UE_LOG(LogTemp, Warning, TEXT("%s Message:%s"), *FString(__FUNCTION__), *Message);
+
+/*
+	TSharedPtr<FJsonObject> ResultObj;
+	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Message);
+	FJsonSerializer::Deserialize(Reader, ResultObj);
+
+	TSharedPtr<FJsonObject> DataObj=  ResultObj->GetObjectField("data");
+	TSharedPtr<FJsonObject> cnObj = ResultObj->GetObjectField("cn");
+	TSharedPtr<FJsonObject> stObj = ResultObj->GetObjectField("st");
+	TArray< TSharedPtr<FJsonValue> > rtArray =  stObj->GetArrayField("rt");
+	for (auto& Tmp: rtArray)
+	{
+		if (TSharedPtr<FJsonObject> InJsonObject = Tmp->AsObject())
+		{
+
+		}
+	}
+*/
+	if (!Message.IsEmpty())
+	{
+		TSharedPtr<FJsonObject> ResultObj;
+		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Message);
+		FJsonSerializer::Deserialize(Reader, ResultObj);
+		FString ssss;
+		if (ResultObj->TryGetStringField("data", ssss))
+		{
+			if (!ssss.IsEmpty())
+			{
+				TSharedPtr<FJsonObject> DataObj;
+				TSharedRef<TJsonReader<>> Reader2 = TJsonReaderFactory<>::Create(ssss);
+				FJsonSerializer::Deserialize(Reader2, DataObj);
+
+				FString dst;
+				FString src;
+
+				bool bDest = DataObj->TryGetStringField(TEXT("dst"), dst);
+				bool bSrc = DataObj->TryGetStringField(TEXT("src"), src);
+				if (bDest && bSrc)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("dst :%s Message [src]:%s"), *dst, *src);
+
+				}
+			}
+
+		
+		}
+		
+	}
+	
+
 }
 
 void UXGKeDaXunFeiSocketSubsystem::OnMessageSent(const FString& MessageString)

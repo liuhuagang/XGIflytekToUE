@@ -56,6 +56,12 @@ protected:
 	static int32 IndexSend;
 	static float* ToSendData;
 
+public:
+	static	FCriticalSection XGAudioCriticalSection;
+	static	TArray<float> AudioData;
+
+
+
 protected:
 	UPROPERTY()
 	UAudioCapture* XGAudioCapture;

@@ -9,9 +9,12 @@ TArray<float*>  UXGAudioCaptureSubsystem::InAudios = {};
 float* UXGAudioCaptureSubsystem::ToSendData = nullptr;
 
 int32 UXGAudioCaptureSubsystem::IndexSend = 0;
+
+FCriticalSection UXGAudioCaptureSubsystem::XGAudioCriticalSection;
+TArray<float> UXGAudioCaptureSubsystem::AudioData = {};
 bool UXGAudioCaptureSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
-	return false;
+	return true;
 }
 
 void UXGAudioCaptureSubsystem::Initialize(FSubsystemCollectionBase& Collection)
@@ -31,6 +34,12 @@ void UXGAudioCaptureSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 		}
 		InAudios.Empty();
 	}
+
+
+	FScopeLock Lock(&XGAudioCriticalSection);
+	AudioData.Empty();
+
+
 
 }
 
@@ -64,6 +73,12 @@ void UXGAudioCaptureSubsystem::StartCapturingAudio()
 			SoundPtr = nullptr;
 		}
 		InAudios.Empty();
+	}
+
+	FScopeLock Lock(&XGAudioCriticalSection);
+	if (AudioData.Num()>0)
+	{
+		AudioData.Empty();
 	}
 
 
@@ -120,16 +135,16 @@ void UXGAudioCaptureSubsystem::OnAudioGenerate(const float* InAudio, int32 NumSa
 		SocketSubsystem->SendVoiceData(InAudio, NumSamples);
 
 	}//有问题 内存泄露
-*/	int32 LeftIndex = 0;
+*/	
+	
+	FScopeLock Lock(&XGAudioCriticalSection);
+	int32 LeftIndex = 0;
 	if (IndexSend == 0)
 	{
 		IndexSend++;
-		ToSendData  = new float[1024];
 		for (int32 SendIndex = 0; SendIndex<341; SendIndex++)
 		{
-			
-			ToSendData[SendIndex] = InAudio[LeftIndex];
-
+			AudioData.Add(InAudio[LeftIndex]);
 			LeftIndex += 6;
 			
 			
@@ -142,7 +157,7 @@ void UXGAudioCaptureSubsystem::OnAudioGenerate(const float* InAudio, int32 NumSa
 		IndexSend++;
 		for (int32 SendIndex = 341; SendIndex < 682; SendIndex++)
 		{
-			ToSendData[SendIndex] = InAudio[LeftIndex];
+			AudioData.Add(InAudio[LeftIndex]);
 
 			LeftIndex += 6;
 		}
@@ -155,16 +170,18 @@ void UXGAudioCaptureSubsystem::OnAudioGenerate(const float* InAudio, int32 NumSa
 		IndexSend = 0;
 		for (int32 SendIndex = 682; SendIndex < 1024; SendIndex++)
 		{
-			ToSendData[SendIndex] = InAudio[LeftIndex];
+			AudioData.Add(InAudio[LeftIndex]);
 
 			LeftIndex += 6;
 		}
 		
-		UXGKeDaXunFeiSocketSubsystem::SendVoiceData(ToSendData, NumSamples);
+	//	UXGKeDaXunFeiSocketSubsystem::SendVoiceData(ToSendData, NumSamples);
 	}
 
 	
 	
+	
+
 
 
 

@@ -1,8 +1,10 @@
 #include "Thread/ConsumeSoundRunnable.h"
+#include "Core/XGKeDaXunFeiSocketSubsystem.h"
+#include "Core/XGAudioCaptureSubsystem.h"
 
 
 
- FCriticalSection FConsumeSoundRunnable::CriticalSection;
+FCriticalSection FConsumeSoundRunnable::CriticalSection;
 bool FConsumeSoundRunnable::Init()
 {
 	return true;
@@ -10,12 +12,30 @@ bool FConsumeSoundRunnable::Init()
 
 uint32 FConsumeSoundRunnable::Run()
 {
-	while (bRunning)
+	while (true)
 	{
-		FScopeLock Lock(&CriticalSection);
 
-		FPlatformProcess::Sleep(0.2);
-		UE_LOG(LogTemp, Display, TEXT("heelo[%s]"), *MyThreadName);
+		FScopeLock Lock(&CriticalSection);
+		if (!bRunning)
+		{
+			break;;
+		}
+		Lock.Unlock();
+		FPlatformProcess::Sleep(0.04);
+
+
+
+
+		if (UXGAudioCaptureSubsystem::AudioData.Num()>1024)
+		{
+			FScopeLock DataLock(&UXGAudioCaptureSubsystem::XGAudioCriticalSection);
+			TArray<float> SendData;
+			SendData.Append(UXGAudioCaptureSubsystem::AudioData.GetData(), 1024);
+			UXGAudioCaptureSubsystem::AudioData.RemoveAt(0, 1024);
+
+			UXGKeDaXunFeiSocketSubsystem::SendVoiceData(SendData.GetData(), 1024);
+		}
+		
 	}
 
 
