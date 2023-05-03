@@ -39,7 +39,7 @@ void UXGAudioCaptureSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 	FScopeLock Lock(&XGAudioCriticalSection);
 	AudioData.Empty();
 
-
+	UXGKeDaXunFeiSocketSubsystem::XGAudioCaptureSubsystem = this;
 
 }
 
@@ -65,6 +65,7 @@ bool UXGAudioCaptureSubsystem::IsTickable() const
 
 void UXGAudioCaptureSubsystem::StartCapturingAudio()
 {
+/*
 	if (InAudios.Num() > 0)
 	{
 		for (auto& SoundPtr : InAudios)
@@ -73,7 +74,7 @@ void UXGAudioCaptureSubsystem::StartCapturingAudio()
 			SoundPtr = nullptr;
 		}
 		InAudios.Empty();
-	}
+	}*/
 
 	FScopeLock Lock(&XGAudioCriticalSection);
 	if (AudioData.Num()>0)
@@ -88,6 +89,15 @@ void UXGAudioCaptureSubsystem::StartCapturingAudio()
 void UXGAudioCaptureSubsystem::StopCapturingAudio()
 {
 	XGAudioCapture->StopCapturingAudio();
+
+	FScopeLock Lock(&XGAudioCriticalSection);
+	if (AudioData.Num() > 0)
+	{
+		AudioData.Empty();
+	}
+
+
+
 }
 
 bool UXGAudioCaptureSubsystem::IsCapturingAudio()

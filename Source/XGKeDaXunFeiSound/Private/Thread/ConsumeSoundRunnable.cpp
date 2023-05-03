@@ -25,10 +25,10 @@ uint32 FConsumeSoundRunnable::Run()
 
 
 
-
+		FScopeLock DataLock(&UXGAudioCaptureSubsystem::XGAudioCriticalSection);
 		if (UXGAudioCaptureSubsystem::AudioData.Num()>1024)
 		{
-			FScopeLock DataLock(&UXGAudioCaptureSubsystem::XGAudioCriticalSection);
+	
 			TArray<float> SendData;
 			SendData.Append(UXGAudioCaptureSubsystem::AudioData.GetData(), 1024);
 			UXGAudioCaptureSubsystem::AudioData.RemoveAt(0, 1024);
@@ -51,7 +51,7 @@ void FConsumeSoundRunnable::Exit()
 
 void FConsumeSoundRunnable::Stop()
 {
-	UE_LOG(LogTemp, Display, TEXT("heelo[%s]stopsssssss"), *MyThreadName);
+	UE_LOG(LogTemp, Display, TEXT("FConsumeSoundRunnable[%s] begin to stop"), *MyThreadName);
 	FScopeLock Lock(&CriticalSection);
 	bRunning = false;
 

@@ -6,6 +6,7 @@
 #include "Subsystems/GameInstanceSubsystem.h"
 #include <IWebSocket.h>
 #include "Thread/ConsumeSoundRunnable.h"
+#include "XGKeDaXunFeiSoundBPLibrary.h"
 #include "XGKeDaXunFeiSocketSubsystem.generated.h"
 
 /**
@@ -30,6 +31,17 @@ public:
 	virtual bool IsTickable() const override;
 	virtual TStatId GetStatId() const override;
 
+
+public:
+
+
+	 void XGBeginSpeachToText(FXGBeginSpeachToTextDelegate InXGBeginSpeachToTextDelegate, FXGSpeachToTextDelegate InXGSpeachToTextDelegat);
+
+
+
+	 void XGStopSpeachToText();
+
+
 public:
 	UFUNCTION(BlueprintCallable)
 		void CreateSocket();
@@ -40,6 +52,7 @@ public:
 public:
 
 	 static void SendVoiceData(const float* InAudio, int32 NumSamples);
+	 static void EndSendVoiceData();
 
 	UFUNCTION(BlueprintCallable)
 	void StopSenVoiceData();
@@ -61,4 +74,12 @@ protected:
 	FString APIKey;
 
 	static	bool bSending ;
+
+
+	bool bSpeechToText = false;
+	FXGBeginSpeachToTextDelegate XGBeginSpeachToTextDelegate;
+	FXGSpeachToTextDelegate XGSpeachToTextDelegate;
+	TSharedPtr< FConsumeSoundRunnable> VoiceRunnable;
+public:
+	static UXGAudioCaptureSubsystem* XGAudioCaptureSubsystem;
 };
