@@ -7,13 +7,13 @@
 #include <IWebSocket.h>
 #include "Thread/ConsumeSoundRunnable.h"
 #include "XGKeDaXunFeiSoundBPLibrary.h"
-#include "XGKeDaXunFeiSocketSubsystem.generated.h"
+#include "XGTTSSubsystem.generated.h"
 
 /**
  *
  */
 UCLASS()
-class XGKEDAXUNFEISOUND_API UXGKeDaXunFeiSocketSubsystem : public UGameInstanceSubsystem, public FTickableGameObject
+class XGKEDAXUNFEISOUND_API UXGTTSSubsystem : public UGameInstanceSubsystem, public FTickableGameObject
 {
 
 	GENERATED_BODY()
@@ -29,9 +29,6 @@ public:
 	virtual TStatId GetStatId() const override;
 
 
-public:
-	 void XGBeginSpeachToText(FXGBeginSpeachToTextDelegate InXGBeginSpeachToTextDelegate, FXGSpeachToTextDelegate InXGSpeachToTextDelegat);
-	 void XGStopSpeachToText();
 
 
 public:
@@ -40,14 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void CloseSocket();
 
-
 public:
+	static TArray<float> FinalUEData;
 
-	 static void SendVoiceData(const float* InAudio, int32 NumSamples);
-	 static void EndSendVoiceData();
-
-	UFUNCTION(BlueprintCallable)
-	void StopSenVoiceData();
 
 protected:
 
@@ -58,20 +50,12 @@ protected:
 	void OnMessageSent(const FString& MessageString);
 
 protected:
-	static	TSharedPtr<IWebSocket> Socket ;
+	TSharedPtr<IWebSocket> Socket ;
 	FString ServerURL = TEXT("");
 	FString ServerProtocol = TEXT("");
 
-	FString Appid;
-	FString APIKey;
 
-	static	bool bSending ;
+protected:
 
-
-	bool bSpeechToText = false;
-	FXGBeginSpeachToTextDelegate XGBeginSpeachToTextDelegate;
-	FXGSpeachToTextDelegate XGSpeachToTextDelegate;
-	TSharedPtr< FConsumeSoundRunnable> VoiceRunnable;
-public:
-	static UXGAudioCaptureSubsystem* XGAudioCaptureSubsystem;
+	FString HMACSHA256(FString APPSecreet, FString Data);
 };

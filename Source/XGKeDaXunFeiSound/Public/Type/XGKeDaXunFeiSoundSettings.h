@@ -20,11 +20,18 @@ public:
 
 
 public:
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite)
-		FString Appid;
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite,Category="General")
+		FString AppID;
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite)
-		FString APIKey;
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite,Category="Real Time Speech To Text")
+		FString APIKeySTT;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Text To Speech Stream")
+		FString APIKeyTTSStream;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Text To Speech Stream")
+		FString APISecretTTSStream;
+
 public:
 
 	UFUNCTION(BlueprintCallable)

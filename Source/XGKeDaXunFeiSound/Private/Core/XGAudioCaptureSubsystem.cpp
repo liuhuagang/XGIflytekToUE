@@ -1,3 +1,5 @@
+// Copyright 2023 Xiao Gang. All Rights Reserved.
+
 #include "Core/XGAudioCaptureSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 #include "Core/XGKeDaXunFeiSocketSubsystem.h"

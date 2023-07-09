@@ -26,6 +26,9 @@ void UXGKeDaXunFeiSoundBPLibrary::XGBeginSpeachToText(const UObject* WorldContex
 
 void UXGKeDaXunFeiSoundBPLibrary::XGStopSpeachToText(const UObject* WorldContextObject)
 {
+
+	FString ChineseTest1 = TEXT("你好");
+
 	if (!WorldContextObject)
 	{
 		return;

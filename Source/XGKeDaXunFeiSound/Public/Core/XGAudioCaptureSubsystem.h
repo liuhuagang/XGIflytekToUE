@@ -1,8 +1,6 @@
-
+// Copyright 2023 Xiao Gang. All Rights Reserved.
 #pragma once
-
 #include "CoreMinimal.h"
-
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Tickable.h"
 #include "AudioCapture.h"

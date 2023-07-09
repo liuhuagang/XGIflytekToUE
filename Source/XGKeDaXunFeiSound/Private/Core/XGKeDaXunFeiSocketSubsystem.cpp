@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright 2023 Xiao Gang. All Rights Reserved.
 
 
 #include "Core/XGKeDaXunFeiSocketSubsystem.h"
@@ -17,8 +17,8 @@ bool UXGKeDaXunFeiSocketSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 
 void UXGKeDaXunFeiSocketSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
-	Appid = UXGKeDaXunFeiSoundSettings::GetDataBaseSettings()->Appid;
-	APIKey = UXGKeDaXunFeiSoundSettings::GetDataBaseSettings()->APIKey;
+	Appid = UXGKeDaXunFeiSoundSettings::GetDataBaseSettings()->AppID;
+	APIKey = UXGKeDaXunFeiSoundSettings::GetDataBaseSettings()->APIKeySTT;
 
 
 
@@ -42,7 +42,7 @@ void UXGKeDaXunFeiSocketSubsystem::Tick(float DeltaTime)
 
 bool UXGKeDaXunFeiSocketSubsystem::IsTickable() const
 {
-	 return !IsTemplate(); //不是CDO才Tick
+	 return !IsTemplate(); 
 }
 
 TStatId UXGKeDaXunFeiSocketSubsystem::GetStatId() const
@@ -175,17 +175,23 @@ void UXGKeDaXunFeiSocketSubsystem::SendVoiceData(const float* InAudio, int32 Num
 		for (; i < 1024;)
 		{	//-1.0~1.0
 			ToChangeAuidoData.Add((int16)FMath::Clamp<int32>(FMath::FloorToInt(32767.0f * InAudio[i]), -32768, 32767));
+			
+
+			//0100 0010 0001 0010
+
 
 			uint8 Bytes[2];
-			//取出数据的高位数据
-			Bytes[0] = (uint8)(ToChangeAuidoData[i] & 0xFF);
 			//取出数据的低位数据
+			//0001 0010
+			Bytes[0] = (uint8)(ToChangeAuidoData[i] & 0xFF);
+			//取出数据的高位数据
+			//100 0010
 			Bytes[1] = (uint8)((ToChangeAuidoData[i] >> 8) & 0xFF);
 
-
-			//大端存储把高位数据放到低字节
+			//01 23 45 67
+			//小端存储把低位数据放到低字节
 			BinaryDataToSend.Add(Bytes[0]);
-			//大端存储把地位数据放到高字节
+			//小端存储把高位数据放到高字节
 			BinaryDataToSend.Add(Bytes[1]);
 
 			i++;
