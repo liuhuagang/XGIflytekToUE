@@ -6,6 +6,7 @@
 #include "Type/XGKeDaXunFeiSoundSettings.h"
 #include "Core/XGAudioCaptureSubsystem.h"
 #include "Algorithm/hmacsha256.h" 
+/*#include "AudioRecordingManager.h"*/
 
 
 
@@ -121,6 +122,74 @@ void UXGTTSSubsystem::CloseSocket()
 
 }
 
+void UXGTTSSubsystem::ConvertPCMToWav()
+{
+	TArray<uint8> OutWavData;
+
+
+	FXGWaveHeard WaveHeard;
+	FXGWaveFmt WaveFmt;
+	FXGWaveData WaveData;
+
+	//头描述
+	FMemory::Memcpy(WaveHeard.ChunkID, "RIFF", strlen("RIFF"));
+	FMemory::Memcpy(WaveHeard.Format, "WAVE", strlen("WAVE"));
+	WaveHeard.ChunkSize = 36 + FinalPCMData.Num() * sizeof(uint8);
+
+	//格式描述
+	FMemory::Memcpy(WaveFmt.SubChunkID, "fmt ", strlen("fmt "));
+	WaveFmt.SubChunkSize = 16;
+	WaveFmt.AudioFormat = 1;
+	WaveFmt.NumChannel = 1;
+	WaveFmt.SampleRate = 16000;
+	WaveFmt.BitsForSample = 16;
+	WaveFmt.ByteRate = 16000 * 1 * 16 / 8;
+	WaveFmt.BlockAlign = 1 * 16 / 8;
+
+	//数据
+	FMemory::Memcpy(WaveData.DataChunkID, "data", strlen("data"));
+	WaveData.DataChunkSize = FinalPCMData.Num() * sizeof(uint8);
+
+	//组合WAV格式数据
+	//头 
+	OutWavData.AddUninitialized(sizeof(FXGWaveHeard));
+	FMemory::Memcpy(OutWavData.GetData(), &WaveHeard, sizeof(FXGWaveHeard));
+
+	//格式描述
+	int32 Index = OutWavData.AddUninitialized(sizeof(FXGWaveFmt));
+	FMemory::Memcpy(&OutWavData[Index], &WaveFmt, sizeof(FXGWaveFmt));
+
+	//数据
+	Index = OutWavData.AddUninitialized(sizeof(FXGWaveData));
+	FMemory::Memcpy(&OutWavData[Index], &WaveData, sizeof(FXGWaveData));
+
+	//合并PCM
+	OutWavData.Append(FinalPCMData);
+
+
+
+
+	FString FilePah= FPaths::ConvertRelativePathToFull(FPaths::ProjectSavedDir())/TEXT("tts.wav");
+	FFileHelper::SaveArrayToFile(OutWavData, *FilePah);
+
+
+
+
+}
+
+USoundWave* UXGTTSSubsystem::PlayWavAudioInScene(const UObject* WorldContextObject)
+{
+	if (!WorldContextObject|| !WorldContextObject->GetWorld())
+	{
+		return nullptr;
+	}
+
+	UWorld* GameWorld = WorldContextObject->GetWorld();
+
+
+	return nullptr;
+}
+
 void UXGTTSSubsystem::OnConnected()
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s"), *FString(__FUNCTION__));
@@ -215,12 +284,16 @@ void UXGTTSSubsystem::OnMessage(const FString& Message)
 		int32	Status = DataObject->GetIntegerField(TEXT("status"));
 		FString Ced = DataObject->GetStringField(TEXT("ced"));
 
+	//	AudioStr.Append(Audio);
 		//音频的二进制数据
 		TArray<uint8> AudioData;
 
 		//接收到的音频字符串 加密后的
 		//解密，然后存到二进制数据组里面
 		FBase64::Decode(Audio, AudioData);
+	
+		FinalPCMData.Append(AudioData);
+
 
 		//PCM数据 16位 单通道 16k
 		TArray<int16> PCMData;
@@ -248,6 +321,8 @@ void UXGTTSSubsystem::OnMessage(const FString& Message)
 
 		}
 
+		OriginPCMData.Append(PCMData);
+;
 		TArray<float> UEData;
 
 		for (auto& Tmp : PCMData)
@@ -255,11 +330,7 @@ void UXGTTSSubsystem::OnMessage(const FString& Message)
 			UEData.Add(FMath::Clamp(Tmp / 32767.f, -1.0, 1.0));
 		}
 
-
 		FinalUEData.Append(UEData);
-
-
-
 
 	}
 
@@ -298,4 +369,50 @@ FString UXGTTSSubsystem::HMACSHA256(FString APPSecreet, FString Data)
 
 	return RetStr;
 
+}
+ void UXGTTSSubsystem::SampleRateConvert(float CurrentSR, float TargetSR, int32 NumChannels, const TArray<int16>& CurrentRecordedPCMData, int32 NumSamplesToConvert, TArray<int16>& OutConverted)
+{
+	int32 NumInputSamples = CurrentRecordedPCMData.Num();
+	int32 NumOutputSamples = NumInputSamples * TargetSR / CurrentSR;
+
+	OutConverted.Reset(NumOutputSamples);
+
+	float SrFactor = (double)CurrentSR / TargetSR;
+	float CurrentFrameIndexInterpolated = 0.0f;
+	check(NumSamplesToConvert <= CurrentRecordedPCMData.Num());
+	int32 NumFramesToConvert = NumSamplesToConvert / NumChannels;
+	int32 CurrentFrameIndex = 0;
+
+	for (;;)
+	{
+		int32 NextFrameIndex = CurrentFrameIndex + 1;
+		if (CurrentFrameIndex >= NumFramesToConvert || NextFrameIndex >= NumFramesToConvert)
+		{
+			break;
+		}
+
+		for (int32 Channel = 0; Channel < NumChannels; ++Channel)
+		{
+			int32 CurrentSampleIndex = CurrentFrameIndex * NumChannels + Channel;
+			int32 NextSampleIndex = CurrentSampleIndex + NumChannels;
+
+			int16 CurrentSampleValue = CurrentRecordedPCMData[CurrentSampleIndex];
+			int16 NextSampleValue = CurrentRecordedPCMData[NextSampleIndex];
+
+			int16 NewSampleValue = FMath::Lerp(CurrentSampleValue, NextSampleValue, CurrentFrameIndexInterpolated);
+
+			OutConverted.Add(NewSampleValue);
+		}
+
+		CurrentFrameIndexInterpolated += SrFactor;
+
+		// Wrap the interpolated frame between 0.0 and 1.0 to maintain float precision
+		while (CurrentFrameIndexInterpolated >= 1.0f)
+		{
+			CurrentFrameIndexInterpolated -= 1.0f;
+
+			// Every time it wraps, we increment the frame index
+			++CurrentFrameIndex;
+		}
+	}
 }

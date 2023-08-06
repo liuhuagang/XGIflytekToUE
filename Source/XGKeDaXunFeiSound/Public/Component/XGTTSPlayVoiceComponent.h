@@ -19,6 +19,11 @@ class XGKEDAXUNFEISOUND_API UXGTTSPlayVoiceComponent : public USynthComponent
 	// Called to generate more audio
 	virtual int32 OnGenerateAudio(float* OutAudio, int32 NumSamples) override;
 
+
+public:
+
+
+
 protected:
 	int32 PlayIndex=0;
 

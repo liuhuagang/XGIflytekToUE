@@ -21,6 +21,10 @@ int32 UXGTTSPlayVoiceComponent::OnGenerateAudio(float* OutAudio, int32 NumSample
 	//避免越界
 	if (PlayIndex > UXGTTSSubsystem::FinalUEData.Num() - 1)
 	{
+		for (int32 SoundIndex = 0; SoundIndex < 1024; SoundIndex++)
+		{
+			OutAudio[SoundIndex]=0;
+		}
 		return 1024;
 	}
 	//需要优化
