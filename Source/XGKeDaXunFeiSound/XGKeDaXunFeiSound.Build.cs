@@ -49,7 +49,6 @@ public class XGKeDaXunFeiSound : ModuleRules
                 "JsonUtilities",
 				"AudioCapture",
                 "AudioCaptureEditor",
-
                 "AudioCaptureRtAudio"
 
 				// ... add private dependencies that you statically link with here ...	
