@@ -1,0 +1,59 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "XGiFlyTekToUE",
+	"Description": "iFlyTek(KeDaXunFei) to UE,About Speech to Text,Text to Speech,Spark",
+	"Category": "XG",
+	"CreatedBy": "XiaoGang",
+	"CreatedByURL": "https://github.com/liuhuagang/XGIflytekToUE",
+	"DocsURL": "https://github.com/liuhuagang/XGIflytekToUE/blob/main/README.md",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"EngineVersion": "5.3",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "XGiFlyTekCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "XGiFlyTekSTT",
+			"Type": "Runtime",
+			"LoadingPhase": "PostDefault",
+			"PlatformAllowList": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "XGiFlyTekTTS",
+			"Type": "Runtime",
+			"LoadingPhase": "PostDefault",
+			"PlatformAllowList": [
+				"Win64"
+			]
+		},
+		{
+			"Name": "XGiFlyTekToUE",
+			"Type": "Runtime",
+			"LoadingPhase": "PostEngineInit",
+			"PlatformAllowList": [
+				"Win64"
+			]
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "AudioCapture",
+			"Enabled": true
+		}
+
+	]
+}
