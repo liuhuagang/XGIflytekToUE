@@ -1,145 +1,214 @@
-# XGIflytekToUE
-## Brief
-This is My IflytekToUE Project.  
-It Contains Two Plugins. About Text To Speech,Speech To Text,Spark and So on.
-The first is XGIflytekToUE Plugin,which is commerical code commercial.   
-The Second is XGKeDaXunFeiSoud Plugins,containing learning versions code,which is contains Videos to help you study how to code every line. Maybe there are some bugs,no need to fix.
+# XGXunFeiLink  
+
+## Brief  
+
+This is XGXunFeiLink Project，Which Connects iFlyTek To UnrealEngine 5.  
+At Pressent,It contains two functions : RealTime SpeechToText ，TextToSpeechStream.
+It Contains two parts:   
+The First  is a XGXunFeiLink plugin, which is commercial.You can buy it through UE-MarketSpace.  
+The Sencod is a XGKeDaXunFeiSoud plugin,which is just study demo code. There are many video to show you how to code it. Please do not use this plugin in Formal occasions.In fact, there are some bugs,which it keeps the same to video.
 
 Commercial use is prohibited without permission!
 If you need Commercial use,Please purchase it In UE Marketspace
 
-这是小刚封装的科大讯飞的能力到UE插件  
-第一个插件完全是商业化封装的插件
-第二个插件是一款学习插件，包含了大量代码视频，可以帮助你理解每一行代码字是如何写出来的。或许，有一些bug，但是没必要去修复。  
+封装了科大讯飞的WebApi能力连接到UE5
+目前主要是：STT和TTS.
+第一个插件XGXunFeiLink完全是商业化封装的插件,推荐使用，商城可以买。
+第二个插件XGKeDaXunFeiSoud是一款学习插件，包含了大量代码视频，可以帮助你理解每一行代码字是如何写出来的。或许，有一些bug，但是没必要去修复。  
 
 未经许可,不允许商业化使用~
 如有需要,请到UE商城进行购买~
 
-## XGIflytekToUE  
+## XGXunFeiLink  
+Hi,the plugin helps you connect to iFLyTek WebApi.
 
-### Real Time Speech To Text  
+At Present,It supports two main functions:RealTime SpeechToText ,TextToSpeech Sream.
 
-DemoVideoUrl:
-#### Get your iFlytek Appid and AppKey
-WebApi ,we do not need App Secret. If you are new person coder,you can get free try for 5 hours in one year.  
-You need create you own APP firstly.
-Please Http this Web.  
-https://www.xfyun.cn/services/rtasr#anchor4503211  
+It includes follows steps:
+
+### 1.Get App Information
+
+DemoVideoUrl:todo  
+
+If you don't create the iFlyTek App,you should create it.
+
+iFlyTek Web:
+
+https://www.xfyun.cn/
+
+After you create the app,you should open Corresponding function in your iFlyTek web control panel,such as STT or TTS.
+
+Be careful,some functions is not free.Howover,you can get free experience in a short time.  
+
+This free web path  :  
+
 https://www.xfyun.cn/free  
 
-![image](DocumentPictures/STTFreeEntry.png)  
+  
+STT:  
 
-In your contoller Center ,you will see AppID and AppKey.  
-![image](DocumentPictures/STTCenterWeb.png)  
-If you need Translate ,you need open if in this web first~  
-iFlyTek RealTime Document:  
-https://www.xfyun.cn/doc/asr/rtasr/API.html  
-
-#### Set Realtiem AppID and AppKey in Plugins Settings.
-You need input AppID and AppKey in UE Project Settings.
-
-![image](DocumentPictures/STTSettins.png)  
-
-#### Start And End RealTime SST  
-
-![image](DocumentPictures/STTBegin.png)    
-
-you can directly Begin from this procedure.  
-
-Be Careful,Defuat Settings is no translate ,and speech is Chinses~    
-
-![image](DocumentPictures/STTResult.png)  
-#### RealTime SST Settings
-
-![image](DocumentPictures/STTReqInfo.png)  
-
-When your mouse hover this varible,you can see some annotation. you can get more at iFlyTekDocument.  
-Simpley say it:
-Lang:  this your Speech lanauge~ Such as Chinese -cn,English-en  
-Enable Translate: Whether push out translte text. only true .TransType ,TransStrategy,TargetLang is useful~.  
-Trans Type: just Type.Look more from iFlyTek Document 
-Trans Strategy: just Stragtegy to pass to translte.Look more from iFlyTek Document  
-Trarget Lang: what language you wang to Transalte to.Look more from iFlyTek Document .Such as Chinese -cn,English-en    
-......  
-In fact~~Don't care about more.Default is ok~
-#### C++Api  
-
-same to blueprint~  
-![image](DocumentPictures/STTC++.png)  
-#### Attention  
-you can use it in UE5.1 ,UE5.3,And maybe other verisons.
-if you are in ue5.3,  your Audio input device must in  
-[48000 kHz,16 bits, 2 channle]  
-[48000 kHz,16 bits, 1 channle]  
-[16000 kHz,16 bits, 1 channle]
-
-May Fix it Later~~
-
-Like :  
-
-![image](DocumentPictures/STT_Audio_48000_2_16.png)  
-
-
-### Text To Speech  
-DemoVideoUrl:  
-#### Get your iFlytek Appid ,AppKey,AppSecret  
-Same to STT 
+![image](DocumentPictures/STTFreeEntry.png)    
+  
+TTS:  
 
 ![image](DocumentPictures/TTS_Free.png)    
+  
 
 
-![image](DocumentPictures/TTS_Center.png)    
+### 2.Set App Information To Plugin
 
-iFlyTekTTS Document:  
-https://www.xfyun.cn/doc/tts/online_tts/API.html  
+RealTime STT needs: AppID,AppKey;  
 
-#### Set your iFlytek Appid ,AppKey,AppSecret  In Plugin Settings  
+![image](DocumentPictures/STTCenterWeb.png)  
+
+TTSStream needs:AppID,AppKey,APPSecret;  
+
+![image](DocumentPictures/TTS_Center.png)      
+
+
+You can set it in Project Settins->XGPlugins->XGXunFeiCoreSettings.
+
+Remember Enable Plugins XGXunFeiLink
+  
+
+STT:  
+![image](DocumentPictures/STTSettins.png)  
+
+
+TTS  :
 
 ![image](DocumentPictures/TTS_Settings.png)    
 
-#### Begin to TTS  
 
+
+### 3.Begin Or Stop RealTime STT
+  
+![image](DocumentPictures/STTBegin.png)      
+
+Call XunFeiBeginRealTimeSpeechToText.
+
+Call XunFeiStopRealTimeSpeechToText.
+
+It captures audio data from audio input device,and then send it to iFLyTek Web Api.
+
+It calls you to recive result ,src text,dst text.
+
+#### 3.1 Be Careful:
+
+Defualt Audio InputDevice must in
+
+[48000 kHz,16 bits, 2 channle],
+
+[48000 kHz,16 bits, 1 channle],
+
+[16000 kHz,16 bits, 1 channle].
+
+If your Audio Device is not right,you wil not get src text.  
+
+![image](DocumentPictures/STT_Audio_48000_2_16.png)  
+
+#### 3.2 Delegate:  
+
+![image](DocumentPictures/STTResult.png)  
+
+InitRealTimeSTTDelegate: Tell you whethe to Create connect to iFlyTek and reasons.
+
+RealTimeSTTNoTranslateDelegate:After Create connect successfully,you can get every sentence src text.
+
+RealTimeSTTTranslateDelegate:After Create connect successfully, if plugin and Web Contol Panel enable translation
+
+,you will get everysentence src text and dst text.
+
+#### 3.3 ReqInfo:
+  
+![image](DocumentPictures/STTReqInfo.png)  
+
+Lang: Speech lanaguge,Chinese is "cn",Engish is "en";
+
+Enable Translte: if it is true ,Web Contol Panel must enable translation. TransType,TransStrategy,TargetLang will be useful.Dst Text will be gived to you.
+
+TargetLang:Convet the speech to Target lanauage.such as "cn","en","cn_cantonese"
+
+......
+
+More Req info:
+
+https://www.xfyun.cn/doc/asr/rtasr/API.html
+
+You can keep it default for test at first.
+
+#### 3.4 C++Api  
+
+Same to blueprint~  
+
+![image](DocumentPictures/STTC++.png)  
+
+### 4.Begin TTS Sream  
+  
 ![image](DocumentPictures/TTS_Blueprint.png)    
 
-You can check  bSaveToLocal and input right file path(absoulte full path,must end with ".wav")
+DemoVideoUrl:  TODO  
 
-if you sucess ,you will get the USoundWave,you can play it.
-if you fail ,you wil get reson.
+Call XunFeiTextToSpeech.
 
-you can directly use this node by default XGiFlyTekTTSReqBusinessInfo.
+It is async blueprint node.
 
-if you want to change something ,please look for iFlyTekDocument~
+It converts text to USoundWave and wav file
 
-Simply to say:  
+#### 4.1 Be Careful:
 
-Vcn: which voice you can choose.  
+You mush input the text to convert.
 
-such as :  
+If you enable SaveToLocal,you must input the right th Absolute file path.
 
-![image](DocumentPictures/TTS_VoiceManage.png)      
+The directory must exist.
 
+The file name must end with ".wav"
+
+#### 4.2 Delegate:
+
+On Success: you will get the USoundWave
+
+On Fail:you will get nullptr and reason.
+
+#### 4.3 ReqInfo:
+
+Vcn: you can choose the speaker to say text.Such as :"xiaoyan","aisbabyxu"......
 Speed,Volume,Pitch:0~100  
 ......
-And so on. if your mouse hover it ,some annotion~
-#### C++Api  
+
+More Req info:
+
+https://www.xfyun.cn/doc/tts/online_tts/API.html
+
+You can keep it default for test at first.
+Part of Vcn List:  
+
+![image](DocumentPictures/TTS_VoiceManage.png)    
+
+#### 4.4 C++Api  
 
 ![image](DocumentPictures/TTS_C++.png)      
 
-### Framwork
-iFlyTekCore    
-base and common api.you do not care about it
+### Framwork  
 
-iFlyTekSTT    
+XGXunFeiBase    
+Process open/ssl->HmacSha256
+    
+XGXunFeiCore    
+Common Api Exposed to OtherModule
+
+XGXunFeiSTT    
 STT Module
 
-iFLyTekTTS    
+XGXunFeiTTS    
 TTS Module
 
-iFlyTekToUE    
-Anything expose to you for use.
+XGXunFeiLink  
+Anything Exposed to you for use.
 Anything C++ Api you shoule use from  
 
-......\Plugins\XGiFlyTekToUE\Source\XGiFlyTekToUE\Public\XGiFlyTekToUEBPLibrary.h  
+......\Plugins\XGXunFeiLink\Source\XGXunFeiLink\Public\XGXunFeiLinkBPLibrary.h  
 
 Other Api is custom use ,may be not good for common use~~
 
