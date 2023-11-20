@@ -37,59 +37,59 @@ struct FXGXunFeiRealTimeSTTTranslateData
 	GENERATED_BODY()
 
 	/**
-	 * 业务标识字段，开启翻译功能后值为 trans
-	 * 翻译功能标识
+	 * Service identification field. The value is trans after the translation function is enabled
+	 * Translation function identification
 	 *
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString biz;
 
 	/**
-	 * 目标语种翻译文本结果
-	 * 	与原始文本src对应
+	 * Translated text results for the target language
+	 * Corresponds to the original text src
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString dst;
 	/**
-	 * 翻译结束标识
-	 * 如果为 true，标识翻译结果已推送完成
+	 * End of translation mark
+	 * If true, the translation result has been pushed
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	bool isEnd;
 
 	/**
-	 * 转写结果序号
-	 * 从0开始
+	 * Transliteration result sequence number
+	 * Start at 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 segId;
 
 	/**
-	 * 送翻译的原始文本
-	 * 音频对应的识别文本
+	 * Send translated original text
+	 * The audio corresponds to the identifying text
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString src;
 
 	/**
-	 * 结果类型标识
-	 * 0-最终结果；1-中间结果
+	 * Result Type identification
+	 * 0- Final result; 1- Intermediate result
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 type;
 
 
 	/**
-	 * 句子在整段语音中的开始时间，单位毫秒(ms)
-	 * 中间结果的bg为准确值
+	 * The beginning time of a sentence in the whole speech, in milliseconds (ms)
+	 * The bg of the intermediate result is the exact value
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 bg;
 
 
 	/**
-	 * 句子在整段语音中的结束时间，单位毫秒(ms)
-	 * 中间结果的ed为0
+	 * The end time of the sentence in the whole speech, in milliseconds (ms)
+	 * The ed of the intermediate result is 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 ed;
@@ -105,14 +105,14 @@ struct FXGXunFeiRealTimeSTTNoTranslateCWData
 	GENERATED_BODY()
 
 	/**
-	 * 词识别结果
+	 * Word recognition result
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString w;
 
 	/**
-	 * 词标识
-	 * n-普通词；s-顺滑词（语气词）；p-标点
+	 * Word recognition result
+	 * n- common words; S-smooth word (modal word); p-punctuation
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString wp;
@@ -129,18 +129,18 @@ struct FXGXunFeiRealTimeSTTNoTranslateWSData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	TArray<FXGXunFeiRealTimeSTTNoTranslateCWData> cw;
 	/**
-	 * 词在本句中的开始时间，单位是帧，1帧=10ms
-	 * 即词在整段语音中的开始时间为(bg+wb*10)ms
-	 * 中间结果的 wb 为 0
+	 * The start time of the word in this sentence, in frames, 1 frame =10ms
+	 * The start time of the word in the whole speech is (bg+wb*10)ms
+	 * The wb of the intermediate result is 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 wb;
 
 	/**
-	 * 词在本句中的结束时间，单位是帧，1帧=10ms
-	 * 即词在整段语音中的结束时间为(bg+we*10)ms
-	 * 中间结果的 we 为 0
-	 */
+	* The end time of the word in this sentence, in frames, 1 frame =10ms
+	* The end time of the word in the whole speech is (bg+we*10)ms
+	* The we of the intermediate result is 0
+	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 we;
 };
@@ -180,8 +180,8 @@ struct FXGXunFeiRealTimeSTTNoTranslateSTData
 
 
 	/**
-	 * 结果类型标识
-	 * 0-最终结果；1-中间结果
+	 * Result Type identifier
+	 *  0- Final result; 1- Intermediate result
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString type;
@@ -209,15 +209,15 @@ struct FXGXunFeiRealTimeSTTNoTranslateData
 	GENERATED_BODY()
 
 	/**
-	 * 推测是区域代号
+	 * Presumed to be a regional code
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FXGXunFeiRealTimeSTTNoTranslateCNData cn;
 
 
 	/**
-	 * 转写结果序号
-	 * 从0开始
+	 * Transcribe the result sequence number
+	 * Start at 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 seg_id;

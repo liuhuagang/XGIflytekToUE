@@ -24,6 +24,7 @@ class  XGXUNFEISTT_API UXGXunFeiRealTimeSTTSubsystem : public UGameInstanceSubsy
 
 	friend class FXGXunFeiConsumeVoiceRunnable;
 	friend class UXGXunFeiLinkBPLibrary;
+	friend class UXGXunFeiAudioCaptureSubsystem;
 
 public:
 
@@ -42,12 +43,16 @@ protected:
 	void XGStopRealTimeSpeechToText();
 
 
+	void CallInitRealTimeSTTDelegate(bool bInitResult,FString InitMessage);
 
-	 void SendVoiceData( const TArray<float>& InVoiceData);
+	void CallRealTimeSTTNoTranslateDelegate(FString InSrcText);
+	void CallRealTimeSTTTranslateDelegate(FString InSrcText, FString InDstText);
 
-	 void RealeaseVoiceConsumeRunnable();
+	void SendVoiceData(const TArray<float>& InVoiceData);
 
-	 void EndSendVoiceData();
+	void RealeaseVoiceConsumeRunnable();
+
+	void EndSendVoiceData();
 
 
 
@@ -62,6 +67,8 @@ protected:
 
 protected:
 
+
+
 	EXGXunFeiRealTimeSTTStatus ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Ready;
 
 	FXGXunFeiInitRealTimeSTTDelegate InitRealTimeSTTDelegate;
@@ -71,7 +78,7 @@ protected:
 	FXGXunFeiRealTimeSTTNoTranslateDelegate RealTimeSTTNoTranslateDelegate;
 
 	TSharedPtr<IWebSocket> Socket;
-	
+
 	FCriticalSection SocketCriticalSection;
 
 	TSharedPtr<FXGXunFeiConsumeVoiceRunnable> ConsumeVoiceRunnable;

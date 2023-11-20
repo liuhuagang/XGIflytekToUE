@@ -2,100 +2,103 @@
 
 ## Brief  
 
-This is XGXunFeiLink Project，Which Connects iFlyTek To UnrealEngine 5.  
-At Pressent,It contains two functions : RealTime SpeechToText ，TextToSpeechStream.
+This is XGXunFeiLink project,which it helps to connect iFlyTek with  UnrealEngine 5.  
+At pressent,It contains three functions : Real-Time Speech To Text ,Text To Speech Stream and Spark.
 It Contains two parts:   
-The First  is a XGXunFeiLink plugin, which is commercial.You can buy it through UE-MarketSpace.  
-The Sencod is a XGKeDaXunFeiSoud plugin,which is just study demo code. There are many video to show you how to code it. Please do not use this plugin in Formal occasions.In fact, there are some bugs,which it keeps the same to video.
-
-Commercial use is prohibited without permission!
-If you need Commercial use,Please purchase it In UE Marketspace
-
-封装了科大讯飞的WebApi能力连接到UE5
-目前主要是：STT和TTS.
-第一个插件XGXunFeiLink完全是商业化封装的插件,推荐使用，商城可以买。
-第二个插件XGKeDaXunFeiSoud是一款学习插件，包含了大量代码视频，可以帮助你理解每一行代码字是如何写出来的。或许，有一些bug，但是没必要去修复。  
-
-未经许可,不允许商业化使用~
-如有需要,请到UE商城进行购买~
+The First  is the XGXunFeiLink plugin, which is commercial.You can purchase it through Unreal Engine Marketplace.  The part of code is only for learning.
+The Sencod is the XGKeDaXunFeiSoud plugin,which is just study demo code. Please do not use it in a formal situation.
 
 ## XGXunFeiLink  
-Hi,the plugin helps you connect to iFLyTek WebApi.
 
-At Present,It supports two main functions:RealTime SpeechToText ,TextToSpeech Sream.
+### 0.Important Things
 
-It includes follows steps:
+iFlyTek provides a lot of Web API both in China or in the global region.
+
+This plugin only supports these WebAPI in China. 
+
+Most of WebAPI seem to be similar.
+
+However,they are really different.You need different accounts,AppID,APIKey,APISecret,especially when you are in China and out of China.
+
+Keep in mind that right App information correspond with right Web API.
 
 ### 1.Get App Information
 
-DemoVideoUrl:todo  
-
 If you don't create the iFlyTek App,you should create it.
 
-iFlyTek Web:
+iFlyTek Web(Chinese site):
 
 https://www.xfyun.cn/
 
-After you create the app,you should open Corresponding function in your iFlyTek web control panel,such as STT or TTS.
+iFlyTek Web(English site):
 
-Be careful,some functions is not free.Howover,you can get free experience in a short time.  
+https://global.xfyun.cn/
 
-This free web path  :  
+This plugin doesn't support Global Webp API ,although code is similar.
 
-https://www.xfyun.cn/free  
+You have to register your account and manage your App information through Chinese site.
 
+It is not very difficult to do . You can translate this web page directly through the browser tool.
+
+I have translated some important interface parameters in my codes and documents.
+
+After you create the App, you should enable corresponding function in your iFlyTek control panel,such as STT ,TTS,Spark.
+
+Be careful that some functions are not free.Howover,You can try it for free in a short time.
   
-STT:  
-
-![image](DocumentPictures/STTFreeEntry.png)    
-  
-TTS:  
-
-![image](DocumentPictures/TTS_Free.png)    
-  
-
-
 ### 2.Set App Information To Plugin
 
-RealTime STT needs: AppID,AppKey;  
+STT needs:
 
-![image](DocumentPictures/STTCenterWeb.png)  
+AppID_RealTimeSTT,	APIKey_RealTimeSTT;  
 
-TTSStream needs:AppID,AppKey,APPSecret;  
+The Picture after it was translated by the browsing tools is as follow:
 
-![image](DocumentPictures/TTS_Center.png)      
+![image](DocumentPictures/STTCenterWeb_E.png)  
+
+TTS needs:
+
+AppID_TTSStream,	APIKey_TTSStream,	API_Secret_TTSStream;
+
+The Picture after it was translated by the browsing tools is as follow:
+
+![image](DocumentPictures/TTS_Center_E.png)      
+
+Spark needs:
+
+AppID_Spark,	APIKey_Spark,	API_Secret_Spark;  
+
+The Picture after it was translated by the browsing tools is as follow:  
 
 
-You can set it in Project Settins->XGPlugins->XGXunFeiCoreSettings.
+![image](DocumentPictures/Spark_Center_E.png)     
 
-Remember Enable Plugins XGXunFeiLink
-  
+You can set it in Project Settings->XGPlugins->XGXunFeiCoreSettings.
 
-STT:  
-![image](DocumentPictures/STTSettins.png)  
+Remember Enable Plugins XGXunFeiLink.
 
+Be careful that APIKey and APISecret are confused simply.
 
-TTS  :
-
-![image](DocumentPictures/TTS_Settings.png)    
-
+![image](DocumentPictures/XunFeiLinkSettings.png)     
 
 
 ### 3.Begin Or Stop RealTime STT
   
 ![image](DocumentPictures/STTBegin.png)      
 
-Call XunFeiBeginRealTimeSpeechToText.
+You can call XunFeiBeginRealTimeSpeechToText to begin STT.
 
-Call XunFeiStopRealTimeSpeechToText.
+You can call XunFeiStopRealTimeSpeechToText to end STT.
 
-It captures audio data from audio input device,and then send it to iFLyTek Web Api.
+It captures audio data from audio input device,and then send it to iFLyTek Web API.
 
-It calls you to recive result ,src text,dst text.
+It will call you to recive results.
+
+It calls you to recive results ,src text,dst text.
 
 #### 3.1 Be Careful:
 
-Defualt Audio InputDevice must in
+Defualt audio input device must in
 
 [48000 kHz,16 bits, 2 channle],
 
@@ -103,43 +106,187 @@ Defualt Audio InputDevice must in
 
 [16000 kHz,16 bits, 1 channle].
 
-If your Audio Device is not right,you wil not get src text.  
-
-![image](DocumentPictures/STT_Audio_48000_2_16.png)  
+If your audio input device is not right,you wil not get src text or dst text.  
 
 #### 3.2 Delegate:  
 
 ![image](DocumentPictures/STTResult.png)  
 
-InitRealTimeSTTDelegate: Tell you whethe to Create connect to iFlyTek and reasons.
+InitRealTimeSTTDelegate: Tell you whethe to create the connection to iFlyTek successfully.
+If you fail,you will get the reason.  
 
-RealTimeSTTNoTranslateDelegate:After Create connect successfully,you can get every sentence src text.
+RealTimeSTTNoTranslateDelegate:After create the connection successfully,you can get every sentence src text.
 
-RealTimeSTTTranslateDelegate:After Create connect successfully, if plugin and Web Contol Panel enable translation
-
-,you will get everysentence src text and dst text.
+RealTimeSTTTranslateDelegate:After Create the connection successfully, if plugin and iFlyTek control panel enable translation funntion,you will get everysentence src text and dst text.
 
 #### 3.3 ReqInfo:
   
 ![image](DocumentPictures/STTReqInfo.png)  
+```
+	/**
+	 * Parameter:lang
+	 * Type:string
+	 * Required:No
+	 * Description:Real-time speech transfer language.The default is Chinese.
+	 * Example:
+	 *			Language type：
+	 *			Chinese、ChineseAndEnglish：cn；
+	 *			Engilis：en；
+	 *			Minor languages and dialects can be added from the iFlyTek control panel console.you can get corresponding parameters.
+	 *			For example："lang=en"
+	 * Error 10110 is reported,  if unauthorised .
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString lang = TEXT("cn");
+```
+```
+	/**
+	 * Custom fields Whether to enable the translation function
+	 * Note: Translation function needs to be enabled on the iFlyTek control panel console.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	bool bEnableTranslate = false;
+```
+```
+	/**
+	 * Parameter:transType
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *				"normal" explains general translation. The default is "normal"；
+	 * Example:	transType="normal"
+	 * Note: Translation function needs to be enabled on the iFlyTek control panel console.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString transType = TEXT("normal");
+```
+```
+    /**
+	 * Parameter:transType
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		Strategy 1: Transcribe the VAD results directly to be translated;
+	 *		Strategy 2: which returns the results of the intermediate process;
+	 *		Strategy 3: Request a translation based on the final punctuation split transcription result;
+	 *		Policy 2 is recommended.
+	 * Example:
+	 *		transStrategy=2
+	 * Note: Translation function needs to be enabled on the iFlyTek control panel console.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	int32 transStrategy = 2;
+```
 
-Lang: Speech lanaguge,Chinese is "cn",Engish is "en";
+```
+	/**
+	 * Parameter:targetLang
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Target Languages: Control what type of language the source language is converted to;
+	 *		Please note that similar to converting from English to French, Chinese must be used as the transition language, that is, English-Chinese-French, and direct conversion between languages excluding Chinese is not supported.
+	 *		Chinese: cn
+	 *		English: en
+	 *		Japanese: ja
+	 *		Korean: ko
+	 *		Russian: ru
+	 *		French:fr
+	 *		Spanish: es
+	 *		Vietnamese: vi
+	 *		Cantonese: cn_cantonese
+	 * Example:
+	 *		Such as：targetLang="en"
+	 *		If you use Chinese real-time translation to English parameter passing Example is as follows:
+	 *		"&lang=cn&transType=normal&transStrategy=2&targetLang=en"
+	 * Note: Translation function needs to be enabled on the iFlyTek control panel console.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString targetLang = TEXT("en");
+```
+```
+	/**
+	 * Parameter:punc
+	 * Type:string
+	 * Required:No
+	 * Description:	Punctuation filter control, punc is returned by default, punc=0 will filter punctuation in the results
+	 * Example: 0
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString punc = TEXT("None");
+```
+```
+	/**
+	 * Parameter:pd
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Vertical Personalization Parameters:
+	 *		Court: court
+	 *		Education: edu
+	 *		Finance: finance
+	 *		Medical: medical
+	 *		Technology: tech
+	 *		Operator: isp
+	 *		Government: gov
+	 *		E-Commerce: ecom
+	 *		Military: mil
+	 *		Enterprise: com
+	 *		Life: life
+	 *		Car: car
+	 * Example:
+	 *		Such as ：pd="edu"
+	 *		Parameter pd is optional. If no parameter is set, it is common by default
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString pd = TEXT("None");
+```
+```
+	/**
+	 * Parameter:vadMdn
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *			Switch between far and near field, do not pass this parameter or pass 1 for the far field and pass 2 for the near field
+	 * Example:	Such as ：vadMdn=2
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	int32 vadMdn = -1;
+```
+```
+	/**
+	 * Parameter:roleType
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *			Whether to enable character separation, it is not enabled by default, and transmission 2 is enabled
+	 *			(the effect is continuously optimized)
+	 * Example:	Such as ：roleType=2
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	int32 roleType = -1;
+```
 
-Enable Translte: if it is true ,Web Contol Panel must enable translation. TransType,TransStrategy,TargetLang will be useful.Dst Text will be gived to you.
-
-TargetLang:Convet the speech to Target lanauage.such as "cn","en","cn_cantonese"
-
-......
-
-More Req info:
-
-https://www.xfyun.cn/doc/asr/rtasr/API.html
-
+```
+	/**
+	 * Parameter:engLangType
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		Language recognition mode selection, default is mode 1 Chinese and English mode:
+	 *		1: Automatic Chinese and English mode
+	 *		2: Chinese mode, may include a small amount of English
+	 *		4: Pure Chinese mode, does not include English
+	 * Example:	Such as ：engLangType=4
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	int32 engLangType = -1;  
+```
 You can keep it default for test at first.
 
-#### 3.4 C++Api  
+#### 3.4 C++ API
 
-Same to blueprint~  
+Same to Blueprint.
 
 ![image](DocumentPictures/STTC++.png)  
 
@@ -147,23 +294,23 @@ Same to blueprint~
   
 ![image](DocumentPictures/TTS_Blueprint.png)    
 
-DemoVideoUrl:  TODO  
+You can call XunFeiTextToSpeech to begin TTS.
 
-Call XunFeiTextToSpeech.
+It is a async blueprint node.
 
-It is async blueprint node.
-
-It converts text to USoundWave and wav file
+It converts text to USoundWave and wav file.
 
 #### 4.1 Be Careful:
 
-You mush input the text to convert.
+You have to input the text to convert it.
 
-If you enable SaveToLocal,you must input the right th Absolute file path.
+If you enable bSaveToLocal,you must input the right and absolute file path.
 
 The directory must exist.
 
 The file name must end with ".wav"
+
+You can keep it default for test at first.
 
 #### 4.2 Delegate:
 
@@ -173,22 +320,304 @@ On Fail:you will get nullptr and reason.
 
 #### 4.3 ReqInfo:
 
-Vcn: you can choose the speaker to say text.Such as :"xiaoyan","aisbabyxu"......
-Speed,Volume,Pitch:0~100  
-......
+![image](DocumentPictures/TTS_Reqinfo.png)    
+```
+	/**
+	 * Parameter:vcn
+	 * Type:string
+	 * Required:Yes
+	 * Description:
+	 *		Pronunciation person, optional value: 
+	 *		"xiaoyan",
+	 *		"aisjiuxu",
+	 *		"aisxping",
+	 *		"aisjinger",
+	 *		"aisbabyxu"
+	 *		Please go to the console to add a trial or purchase pronunciation person, after     adding the pronunciation person Parameter value will be displayed
+	 * Example:
+	 *		"xiaoyan"
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTS")
+	FString vcn = TEXT("xiaoyan");
 
-More Req info:
+```
 
-https://www.xfyun.cn/doc/tts/online_tts/API.html
+```
+	/**
+	 * Parameter:speed
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		The value is optional: [0-100]. The default value is 50
+	 * Example:
+	 *		50
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTS")
+	int32 speed = 50;
+
+```
+
+
+```
+	/**
+	 * Parameter:volume
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		The value is optional: [0-100]. The default value is 50
+	 * Example:
+	 *		50
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTS")
+	int32 volume = 50;
+
+```
+
+```
+	/**
+	 * Parameter:pitch
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		The value is optional: [0-100]. The default value is 50
+	 * Example:
+	 *		50
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTS")
+	int32 pitch = 50;
+
+```
+
+```
+	/**
+	 * Parameter:bgs
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		Background sound for synthesized audio
+	 *			0: No background sound (default)
+	 *			1: Background sound
+	 * Example:
+	 *		0
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTS")
+	int32 bgs = 0;
+
+```
+```
+
+	/**
+	 * Parameter:reg
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Set English pronunciation:
+	 *			0: Automatic judgment processing, if not sure will be processed according to the English word spelling (default)
+	 *			1: All English is pronounced alphabetically
+	 *			2: Automatic judgment processing, if not sure will be read according to the letter
+	 *		Default pronunciation according to English words
+	 * Example:
+	 *		"2"
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTS")
+	FString reg = TEXT("2");
+
+```
+```
+	/**
+	 * Parameter:rdn
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Synthetic audio digital pronunciation
+	 *			0: Automatic judgment (default)
+	 *			1: full value
+	 *			2: complete string
+	 *			3: The string takes precedence
+	 * Example:		"0"
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTS")
+	FString rdn = TEXT("0");
+
+```
+
 
 You can keep it default for test at first.
-Part of Vcn List:  
 
+The Picture after it was translated by the browsing tools is as follow:
+The Picture Shows where to add a new speeker.
 ![image](DocumentPictures/TTS_VoiceManage.png)    
 
-#### 4.4 C++Api  
+#### 4.4 C++API  
 
 ![image](DocumentPictures/TTS_C++.png)      
+
+### 5. Begin Sprak    
+
+![image](DocumentPictures/Spark_Begin.png)
+
+You can call XunFeiSpark to begin Spark.
+
+You can communicate with Spark(v1.5,v2.0,v3.0).
+
+#### 5.1 Be Careful  
+
+Although the Spark has the same App information(AppID_Spark,APIKey_Spark,API_Secret_Spark)，the  different  Spark version has different authority management and token management.  
+
+#### 5.2 Delegate  
+
+![image](DocumentPictures/Spark_Delegate.png)
+
+On Success: You will get true and the message(Spark send it to you).
+  
+On Fail: You will get false and the message(why to fail)  
+
+#### 5.3 ReqInfo    
+![image](DocumentPictures/Spark_Delegate.png)  
+
+You can choose different Spark Versions from InSparkVersion.
+
+You should input right information to InXunFeiSparkReqInfo.
+
+##### 5.3.1 FXGXunFeiSparkReqInfo  
+
+![image](DocumentPictures/Spark_ReqInfo_Main.png)      
+
+Header: About user ID.  
+
+Paramter:About Spark settings.  
+
+Payload:Text contents.  
+
+##### 5.3.2 FXGXunFeiSparkReqHeaderInfo
+
+![image](DocumentPictures/Spark_ReqInfo_Header.png)      
+
+```
+	/**
+	 * Parameter:uid
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Maximum length 32
+	 * Description:
+	 *		Id of each user, which is used to distinguish different users
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek Spark")
+	FString uid = TEXT("None");
+
+
+```
+##### 5.3.3 FXGXunFeiSparkReqParameterInfo
+
+![image](DocumentPictures/Spark_ReqInfo_ParameterInfo.png)      
+
+```
+	/**
+	 * Parameter:temperature
+	 * Type:float
+	 * Required:No
+	 * Description:
+	 *		The value is [0,1], and the default value is 0.5
+	 * Example:
+	 *		Nuclear sampling threshold. 
+	 *		It is used to determine the randomness of the result. The higher the value, the stronger the randomness, that is, the higher the possibility of getting different answers to the same question
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek Spark")
+	float temperature = 0.5;
+
+```
+
+
+```
+	/**
+	 * Parameter:max_tokens
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		V1.5,The value is [1,4096]
+	 *		V2.0,The value is [1,8192]， and the default value is 2048。
+	 *		V3.0,The value is [1,8192]， and the default value is 2048。
+	 * Example:
+	 *		The maximum length of tokens that the model answers
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek Spark")
+	int32 max_tokens = 2048;
+
+```
+
+```
+	/**
+	 * Parameter:top_k
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		The value is[1，6],and the default value is4
+	 * Example:
+	 *		Randomly select one of k candidates (non-equal probability)
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek Spark")
+	int32 top_k = 4;
+
+```
+##### 5.3.4 FXGXunFeiSparkReqPayloadInfo
+
+![image](DocumentPictures/Spark_ReqInfo_PayLoadInfo.png)      
+
+You can input history text contents to the array.  
+
+The last text element must be your question.
+
+If you do not have the histroy ,the last text will be the only element in the array.
+
+```
+	/**
+	 * Parameter:role
+	 * Type:string
+	 * Required:Yes
+	 * Description:
+	 *		The Value is [user,assistant]
+	 * Example:
+	 *		"user" indicates the user's problem, and "assistant" indicates the AI's reply
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek Spark")
+	FString role;
+
+```
+
+```
+	/**
+	 * Parameter:content
+	 * Type:string
+	 * Required:Yes
+	 * Description:
+	 *		All content tokens need to be controlled within 8192
+	 * Example:
+	 *		The conversation between the user and the AI
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek Spark")
+	FString content;
+
+```
+
+#### 5.4 C++ API  
+
+
+![image](DocumentPictures/Spark_C++.png)      
+
 
 ### Framwork  
 
@@ -196,7 +625,7 @@ XGXunFeiBase
 Process open/ssl->HmacSha256
     
 XGXunFeiCore    
-Common Api Exposed to OtherModule
+Common API Exposed to OtherModule
 
 XGXunFeiSTT    
 STT Module
@@ -204,21 +633,73 @@ STT Module
 XGXunFeiTTS    
 TTS Module
 
+XGXunFeiSpark    
+Spark Module
+
+XGXunFeiOther
+......(to be added)
+
 XGXunFeiLink  
-Anything Exposed to you for use.
-Anything C++ Api you shoule use from  
+It contains UE C++ API .
 
 ......\Plugins\XGXunFeiLink\Source\XGXunFeiLink\Public\XGXunFeiLinkBPLibrary.h  
 
-Other Api is custom use ,may be not good for common use~~
+Other API is highly customized.
+It may be not good for the general design.
 
-![image](DocumentPictures/All_Frame.png)
+![image](DocumentPictures/All_Frame.png)  
+
+Remember it：
+If you use C++ API,you should add the modules to your "*.build.cs".
+```
+public class XGXunFeiDemo : ModuleRules
+{
+	public XGXunFeiDemo(ReadOnlyTargetRules Target) : base(Target)
+	{
+		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+	
+		PublicDependencyModuleNames.AddRange(new string[] { 
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore","
+			 XGXunFeiLink",
+			"XGXunFeiCore",
+			"XGXunFeiSTT",
+			"XGXunFeiTTS",
+			"XGXunFeiSpark"
+        });
+
+		PrivateDependencyModuleNames.AddRange(new string[] {  });
+
+
+	}
+}
+
+```
 
 ### Package
 No problem~
 
-## XGKeDaXunFeiSoud  
+### Other
+This plugin does not contain any iFlyTek's files(\*.h,\*.cpp,\*.lib,......)
 
-StudyVideoUrl:  
-https://www.bilibili.com/video/BV11h41137bq/
+This plugin does not contain AI code or AI Model code.
+
+This plugin uses "OpenSSL" to encrypt information in the network,but it will not send data to the Creator("OpenSSL").
+
+This plugin will not send any data to the plugin author.
+
+This plugin was not developed by iFlyTek.
+
+This plugin will only send the interactive data to iFLyTek and recieve the message from iFlyTek . This plugin will not generate any data directly.You must comply with the relevant user and data usage agreements aboutt iFlyTek.These agreements can be found in the iFLyTek website.
+
+The part of plugin code was uploaded to GitHub just for learning.
+
+If the plugin is useful for you. Please purchase it in Unreal Engine Marketplace.
+
+Thanks a lot.
+
+## XGKeDaXunFeiSoud  
+TODO.
 

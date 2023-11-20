@@ -6,12 +6,15 @@
 #include "WebSocketsModule.h"
 #include "JsonObjectConverter.h"
 #include "HAL/RunnableThread.h"
-
+#include "Async/Async.h"
+#include "Async/TaskGraphInterfaces.h"
 
 #include "LogXGXunFeiSTT.h"
 #include "XGXunFeiRealTimeSTTRespType.h"
 #include "XGXunFeiAudioCaptureSubsystem.h"
 #include "XGXunFeiConsumeVoiceRunnable.h"
+
+
 
 bool UXGXunFeiRealTimeSTTSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -20,17 +23,20 @@ bool UXGXunFeiRealTimeSTTSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 
 void UXGXunFeiRealTimeSTTSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
+
 	Super::Initialize(Collection);
 }
 
 void UXGXunFeiRealTimeSTTSubsystem::Deinitialize()
 {
 	XGStopRealTimeSpeechToText();
+
 	Super::Deinitialize();
+
 }
 
 void UXGXunFeiRealTimeSTTSubsystem::XGBeginRealTimeSpeechToText(
-		FXGXunFeiRealTimeSTTReqInfo& InRealTimeSTTReqInfo,
+	FXGXunFeiRealTimeSTTReqInfo& InRealTimeSTTReqInfo,
 	FXGXunFeiInitRealTimeSTTDelegate InInitRealTimeSTTDelegate,
 	FXGXunFeiRealTimeSTTNoTranslateDelegate InRealTimeSTTNoTranslateDelegate,
 	FXGXunFeiRealTimeSTTTranslateDelegate InRealTimeSTTTranslateDelegate)
@@ -39,12 +45,12 @@ void UXGXunFeiRealTimeSTTSubsystem::XGBeginRealTimeSpeechToText(
 	{
 		InInitRealTimeSTTDelegate.ExecuteIfBound(false, TEXT("XGXunFeiRealTimeSTT is Running !"));
 
-		UE_LOG(LogXGXunFeiSTT, Warning, TEXT("[%s] try to connect to iFLyTek,But It is Running"),*FString(__FUNCTION__));
+		UE_LOG(LogXGXunFeiSTT, Warning, TEXT("[%s] try to connect to iFLyTek,But It is Running"), *FString(__FUNCTION__));
 
 		return;
 	}
 
-	UE_LOG(LogXGXunFeiSTT, Warning, TEXT("[%s] try to connect to iFLyTek"), *FString(__FUNCTION__));
+	UE_LOG(LogXGXunFeiSTT, Display, TEXT("[%s] is trying to connect to iFLyTek"), *FString(__FUNCTION__));
 
 	ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Init;
 
@@ -55,17 +61,23 @@ void UXGXunFeiRealTimeSTTSubsystem::XGBeginRealTimeSpeechToText(
 	FModuleManager::Get().LoadModuleChecked("WebSockets");
 	FString ServerProtocol = TEXT("ws");
 	FString ServerURL = TEXT("ws://rtasr.xfyun.cn/v1/ws?");
-
 	ServerURL += InRealTimeSTTReqInfo.GenerateRequireParams();
-	Socket = FWebSocketsModule::Get().CreateWebSocket(ServerURL, ServerProtocol);
 
-	Socket->OnConnected().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnConnected);
-	Socket->OnConnectionError().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnConnectionError);
-	Socket->OnClosed().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnClosed);
-	Socket->OnMessage().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnMessage);
-	Socket->OnMessageSent().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnMessageSent);
 
-	Socket->Connect();
+	AsyncTask(ENamedThreads::GameThread, [ServerURL, ServerProtocol, this]() {
+
+		Socket = FWebSocketsModule::Get().CreateWebSocket(ServerURL, ServerProtocol);
+		Socket->OnConnected().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnConnected);
+		Socket->OnConnectionError().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnConnectionError);
+		Socket->OnClosed().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnClosed);
+		Socket->OnMessage().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnMessage);
+		Socket->OnMessageSent().AddUObject(this, &UXGXunFeiRealTimeSTTSubsystem::OnMessageSent);
+
+		Socket->Connect();
+		});
+
+
+
 
 }
 
@@ -73,11 +85,11 @@ void UXGXunFeiRealTimeSTTSubsystem::XGStopRealTimeSpeechToText()
 {
 	if (ReakTimeSTTStatus == EXGXunFeiRealTimeSTTStatus::Ready)
 	{
-//		UE_LOG(LogXGXunFeiSTT, Warning, TEXT("[%s] try to close iFLyTek connect,but It was closed"), *FString(__FUNCTION__));
+		//UE_LOG(LogXGXunFeiSTT, Warning, TEXT("[%s] try to close iFLyTek connect,but It was closed"), *FString(__FUNCTION__));
 		return;
 	}
 
-//	UE_LOG(LogXGXunFeiSTT, Warning, TEXT("[%s] try to close iFLyTek Connect"), *FString(__FUNCTION__));
+	//UE_LOG(LogXGXunFeiSTT, Warning, TEXT("[%s] try to close iFLyTek Connect"), *FString(__FUNCTION__));
 	InitRealTimeSTTDelegate.Clear();
 	RealTimeSTTNoTranslateDelegate.Clear();
 	RealTimeSTTTranslateDelegate.Clear();
@@ -85,7 +97,10 @@ void UXGXunFeiRealTimeSTTSubsystem::XGStopRealTimeSpeechToText()
 
 	UXGXunFeiAudioCaptureSubsystem* XunFeiAudioCaptureSubsystem = GetGameInstance()->GetSubsystem<UXGXunFeiAudioCaptureSubsystem>();
 
-	XunFeiAudioCaptureSubsystem->StopCapturingAudio();
+	if (XunFeiAudioCaptureSubsystem)
+	{
+		XunFeiAudioCaptureSubsystem->StopCapturingAudio();
+	}
 
 	RealeaseVoiceConsumeRunnable();
 
@@ -93,7 +108,44 @@ void UXGXunFeiRealTimeSTTSubsystem::XGStopRealTimeSpeechToText()
 
 
 
+}
 
+void UXGXunFeiRealTimeSTTSubsystem::CallInitRealTimeSTTDelegate(bool bInitResult, FString InitMessage)
+{
+	FXGXunFeiInitRealTimeSTTDelegate TempRealTimeSTTDelegate = InitRealTimeSTTDelegate;
+
+	AsyncTask(ENamedThreads::GameThread, [=]() {
+
+		TempRealTimeSTTDelegate.ExecuteIfBound(bInitResult, InitMessage);
+
+		});
+
+
+
+}
+
+void UXGXunFeiRealTimeSTTSubsystem::CallRealTimeSTTNoTranslateDelegate(FString InSrcText)
+
+{
+
+	FXGXunFeiRealTimeSTTNoTranslateDelegate TempRealTimeSTTNoTranslateDelegate = RealTimeSTTNoTranslateDelegate;
+	AsyncTask(ENamedThreads::GameThread, [=]() {
+
+		TempRealTimeSTTNoTranslateDelegate.ExecuteIfBound(InSrcText);
+
+		});
+
+}
+
+void UXGXunFeiRealTimeSTTSubsystem::CallRealTimeSTTTranslateDelegate(FString InSrcText, FString InDstText)
+{
+	FXGXunFeiRealTimeSTTTranslateDelegate TempRealTimeSTTTranslateDelegate = RealTimeSTTTranslateDelegate;
+
+	AsyncTask(ENamedThreads::GameThread, [=]() {
+
+		TempRealTimeSTTTranslateDelegate.ExecuteIfBound(InSrcText, InDstText);
+
+		});
 
 
 }
@@ -116,9 +168,11 @@ void UXGXunFeiRealTimeSTTSubsystem::SendVoiceData(const TArray<float>& InVoiceDa
 	}
 
 	FScopeLock Lock(&SocketCriticalSection);
+
 	if (Socket.IsValid() && Socket->IsConnected())
 	{
 		Socket->Send(BinaryDataToSend.GetData(), BinaryDataToSend.Num(), true);
+
 	}
 
 
@@ -137,13 +191,18 @@ void UXGXunFeiRealTimeSTTSubsystem::RealeaseVoiceConsumeRunnable()
 void UXGXunFeiRealTimeSTTSubsystem::EndSendVoiceData()
 {
 	FScopeLock Lock(&SocketCriticalSection);
+
 	if (Socket.IsValid() && Socket->IsConnected())
 	{
 		FString EndStr = TEXT("{\"end\": true}");
+
 		const char* CharValue = TCHAR_TO_UTF8(*EndStr);
+
 		int32 Length = strlen(CharValue);
+
 		Socket->Send(CharValue, Length, true);
 		Socket->Close();
+		Socket.Reset();
 	}
 
 }
@@ -160,11 +219,14 @@ void UXGXunFeiRealTimeSTTSubsystem::OnConnectionError(const FString& ErrorMessag
 {
 	UE_LOG(LogXGXunFeiSTT, Error, TEXT("[%s]:ConnectError,Message:[%s]!"), *FString(__FUNCTION__), *ErrorMessage);
 
-	XGStopRealTimeSpeechToText();
-
 
 	FString Message = FString(__FUNCTION__) + TEXT("-ConnectError,Message:") + ErrorMessage;
-	InitRealTimeSTTDelegate.ExecuteIfBound(false, Message);
+
+	CallInitRealTimeSTTDelegate(false, Message);
+
+	XGStopRealTimeSpeechToText();
+
+	Socket.Reset();
 
 	ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Ready;
 
@@ -178,6 +240,7 @@ void UXGXunFeiRealTimeSTTSubsystem::OnClosed(int32 StatusCode, const FString& Re
 	XGStopRealTimeSpeechToText();
 
 	Socket.Reset();
+
 	ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Ready;
 
 }
@@ -189,14 +252,20 @@ void UXGXunFeiRealTimeSTTSubsystem::OnMessage(const FString& Message)
 	FXGXunFeiRealTImeSTTRespInfo RealTImeSTTRespInfo;
 	if (!Message.IsEmpty() && FJsonObjectConverter::JsonObjectStringToUStruct(Message, &RealTImeSTTRespInfo))
 	{
-
-
 		if (RealTImeSTTRespInfo.action.Equals(TEXT("started")))
 		{
-			if (ReakTimeSTTStatus!= EXGXunFeiRealTimeSTTStatus::Init)
+			if (ReakTimeSTTStatus != EXGXunFeiRealTimeSTTStatus::Init)
 			{
+				FString StartedErroeMessage = TEXT("[%s]:Unknow Procedure Error");
+
+				UE_LOG(LogXGXunFeiSTT, Error, TEXT("[%s]:[%s]"), *FString(__FUNCTION__), *StartedErroeMessage);
+
+				CallInitRealTimeSTTDelegate(false, StartedErroeMessage);
+
 				XGStopRealTimeSpeechToText();
+
 				return;
+
 			}
 
 			ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Processing;
@@ -207,15 +276,20 @@ void UXGXunFeiRealTimeSTTSubsystem::OnMessage(const FString& Message)
 			XunFeiAudioCaptureSubsystem->StartCapturingAudio();
 
 			bool bGetAudioDevice = XunFeiAudioCaptureSubsystem->GetAudioCaptureDeviceInfo(AudioCaptureDeviceInfo);
+
 			bool bRightAudioRateAndChannles = AudioCaptureDeviceInfo.SampleRate == 48000 && AudioCaptureDeviceInfo.NumInputChannels == 2;
+
 			bRightAudioRateAndChannles = true;
 
 			if (!bGetAudioDevice || !bRightAudioRateAndChannles)
 			{
-				UE_LOG(LogXGXunFeiSTT, Error, TEXT("AudioCaptureDevice is not right!"));
+				FString AudioErrorMessage = TEXT("AudioCaptureDevice is not right!");
+
+				UE_LOG(LogXGXunFeiSTT, Error, TEXT("[%s]:[%s]"), *FString(__FUNCTION__), *AudioErrorMessage);
+
 				XunFeiAudioCaptureSubsystem->StopCapturingAudio();
 
-				InitRealTimeSTTDelegate.ExecuteIfBound(false, TEXT("AudioCaptureDevice is not right!"));
+				CallInitRealTimeSTTDelegate(false, AudioErrorMessage);
 
 				XGStopRealTimeSpeechToText();
 
@@ -224,18 +298,23 @@ void UXGXunFeiRealTimeSTTSubsystem::OnMessage(const FString& Message)
 
 
 
-			ConsumeVoiceRunnable = MakeShared<FXGXunFeiConsumeVoiceRunnable>(TEXT("XunFeiConsumeVoiceRunnable"), XunFeiAudioCaptureSubsystem, this);
+			ConsumeVoiceRunnable = MakeShared<FXGXunFeiConsumeVoiceRunnable>(TEXT("XunFeiConsumeVoiceRunnable"), this);
 			FRunnableThread* RunnableThread = FRunnableThread::Create(ConsumeVoiceRunnable.Get(), *(ConsumeVoiceRunnable->ThreadName));
 
-			InitRealTimeSTTDelegate.ExecuteIfBound(true, TEXT("XunFeiRealTimeSTT Init Success !"));
+			FString InitMessage = TEXT("XunFeiRealTimeSTT Init Success !");
 
+			CallInitRealTimeSTTDelegate(false, InitMessage);
+
+			UE_LOG(LogXGXunFeiSTT, Display, TEXT("[%s]:[%s]"), *FString(__FUNCTION__), *InitMessage);
 
 		}
 		else if (RealTImeSTTRespInfo.action.Equals(TEXT("error")))
 		{
 			UE_LOG(LogXGXunFeiSTT, Error, TEXT("[%s]--Error--[%s]"), *FString(__FUNCTION__), *(RealTImeSTTRespInfo.desc));
+
+			CallInitRealTimeSTTDelegate(false, *(RealTImeSTTRespInfo.desc));
+
 			XGStopRealTimeSpeechToText();
-			InitRealTimeSTTDelegate.ExecuteIfBound(false, *(RealTImeSTTRespInfo.desc));
 
 			return;
 
@@ -258,8 +337,11 @@ void UXGXunFeiRealTimeSTTSubsystem::OnMessage(const FString& Message)
 						FString dst = RealTimeSTTTranslateData.dst;
 						FString src = RealTimeSTTTranslateData.src;
 
-						UE_LOG(LogXGXunFeiSTT, Log, TEXT("[dst] :%s Message [src]:%s"), *dst, *src);
-						RealTimeSTTTranslateDelegate.ExecuteIfBound(src, dst);
+						UE_LOG(LogXGXunFeiSTT, Log, TEXT("[%s]: [dst]-[%s]||[src]-[%s]"), *FString(__FUNCTION__), *dst, *src);
+
+						CallRealTimeSTTTranslateDelegate(src, dst);
+
+
 					}
 				}
 
@@ -287,8 +369,8 @@ void UXGXunFeiRealTimeSTTSubsystem::OnMessage(const FString& Message)
 							}
 						}
 
-						UE_LOG(LogXGXunFeiSTT, Log, TEXT("[src] :%s "), *OutText);
-						RealTimeSTTNoTranslateDelegate.ExecuteIfBound(OutText);
+						UE_LOG(LogXGXunFeiSTT, Log, TEXT("[%s]:[src]-[%s] "), *FString(__FUNCTION__), *OutText);
+						CallRealTimeSTTNoTranslateDelegate(OutText);
 					}
 
 

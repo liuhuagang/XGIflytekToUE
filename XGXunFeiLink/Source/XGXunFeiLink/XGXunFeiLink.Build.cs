@@ -37,8 +37,8 @@ public class XGXunFeiLink : ModuleRules
 			new string[]
 			{
 				"CoreUObject",
-				"Engine",
-			}
+				"Engine"
+            }
 			);
 		
 		

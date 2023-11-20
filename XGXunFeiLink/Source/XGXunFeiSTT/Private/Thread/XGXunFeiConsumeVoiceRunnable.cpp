@@ -6,11 +6,9 @@
 
 
 FXGXunFeiConsumeVoiceRunnable::FXGXunFeiConsumeVoiceRunnable(FString InThreadName,
-	UXGXunFeiAudioCaptureSubsystem* InAudioCaptureSubsystem,
-	UXGXunFeiRealTimeSTTSubsystem* InRealTimeSTTSubsystem)
-:ThreadName(InThreadName)
-, AudioCaptureSubsystem(InAudioCaptureSubsystem)
-, RealTimeSTTSubsystem(InRealTimeSTTSubsystem)
+	TWeakObjectPtr<UXGXunFeiRealTimeSTTSubsystem> InRealTimeSTTSubsystem)
+	:ThreadName(InThreadName)
+	, RealTimeSTTSubsystem(InRealTimeSTTSubsystem)
 {
 
 
@@ -28,30 +26,46 @@ bool FXGXunFeiConsumeVoiceRunnable::Init()
 
 uint32 FXGXunFeiConsumeVoiceRunnable::Run()
 {
-	bIsRunning =true;
+	bIsRunning = true;
 
-	while (bIsRunning)
+	while (true)
 	{
 		FPlatformProcess::Sleep(0.04);
 
-		TArray<float> VoiceData ;
-		bool bRightVoice = AudioCaptureSubsystem->GetVoiceData(VoiceData);
+
+
+		TArray<float> VoiceData;
+
+
+		bool bRightVoice = UXGXunFeiAudioCaptureSubsystem::GetVoiceData(VoiceData);
+
+
+		FScopeLock ConsumeRunnableLcoak(&CriticalSection);
+
+		if (!bIsRunning)
+		{
+			break;
+		}
 
 		if (bRightVoice)
 		{
 			RealTimeSTTSubsystem->SendVoiceData(VoiceData);
 		}
+
+
 	}
 	return 0;
 }
 
 void FXGXunFeiConsumeVoiceRunnable::Stop()
 {
+	FScopeLock ConsumeRunnableLcoak(&CriticalSection);
+
 	bIsRunning = false;
 
 }
 
 void FXGXunFeiConsumeVoiceRunnable::Exit()
 {
-	AudioCaptureSubsystem->ClearVoiceData();
+	UXGXunFeiAudioCaptureSubsystem::ClearVoiceData();
 }
