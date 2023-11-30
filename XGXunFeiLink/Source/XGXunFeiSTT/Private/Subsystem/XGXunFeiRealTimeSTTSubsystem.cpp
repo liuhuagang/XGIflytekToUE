@@ -54,7 +54,7 @@ void UXGXunFeiRealTimeSTTSubsystem::XGBeginRealTimeSpeechToText(
 
 	ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Init;
 
-	InitRealTimeSTTDelegate = InitRealTimeSTTDelegate;
+	InitRealTimeSTTDelegate = InInitRealTimeSTTDelegate;
 	RealTimeSTTNoTranslateDelegate = InRealTimeSTTNoTranslateDelegate;
 	RealTimeSTTTranslateDelegate = InRealTimeSTTTranslateDelegate;
 
