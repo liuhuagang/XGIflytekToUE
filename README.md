@@ -384,9 +384,12 @@ On Success: you will get the USoundWave
 
 On Fail:you will get nullptr and reason.
 
-#### 4.3 ReqInfo:
+#### 4.3 ReqInfo:  
+You can adjust some parameters  
 
-![image](DocumentPictures/TTS_Reqinfo.png)
+![image](DocumentPictures/TTS_Reqinfo.png)  
+
+you can choose more speaker from iFlyTek console.
 
 ```
 	/**
