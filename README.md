@@ -929,10 +929,12 @@ On Fail:you will get nullptr and reason.
 
 #### 7.3 ReqInfo:
 
-![image](DocumentPictures/TTSG_Reqinfo.png)    
+It is similar with TTSReqInfo.  
+But the speaker is very important!  
 
-  
-  
+![image](DocumentPictures/TTSG_ReqInfo.png)  
+Some parameters are as follows: 
+
 ```
 	/**
 	 * Parameter:vcn
