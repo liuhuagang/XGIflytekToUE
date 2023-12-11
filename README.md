@@ -3,10 +3,17 @@
 ## Brief  
 
 This is XGXunFeiLink project,which it helps to connect iFlyTek with  UnrealEngine 5.  
-At pressent,It contains three functions : Real-Time Speech To Text ,Text To Speech Stream and Spark.
-It Contains two parts:   
-The First  is the XGXunFeiLink plugin, which is commercial.You can purchase it through Unreal Engine Marketplace.  The part of code is only for learning.
-The Sencod is the XGKeDaXunFeiSoud plugin,which is just study demo code. Please do not use it in a formal situation.
+At pressent,It contains Five functions :   
+
+a.Automated Speech Recognition(Real-time ASR,ASRG)--Global  
+b.Online TTS(TTSG)--Global  
+c.Real-Time Speech To Text(STT)--No Global   
+d.Text To Speech Stream(TTS)--No Global  
+e.Spark(Spark)--No Global  
+
+It contains two parts:   
+The First  is the XGXunFeiLink plugin, which is commercial.You can purchase it through Unreal Engine Marketplace.The part of code is only for learning.
+The Second is the XGKeDaXunFeiSoud plugin,which is just study demo code. Please do not use it in a formal situation.
 
 ## XGXunFeiLink  
 
@@ -14,29 +21,29 @@ The Sencod is the XGKeDaXunFeiSoud plugin,which is just study demo code. Please 
 
 iFlyTek provides a lot of Web API both in China or in the global region.
 
-This plugin only supports these WebAPI in China. 
+This plugin supports these WebAPI in different region. 
 
 Most of WebAPI seem to be similar.
 
-However,they are really different.You need different accounts,AppID,APIKey,APISecret,especially when you are in China and out of China.
-
+However,they are really different.  
+You need different accounts,AppID,APIKey,APISecret,especially when you are in China and out of China.
 Keep in mind that right App information correspond with right Web API.
 
 ### 1.Get App Information
 
 If you don't create the iFlyTek App,you should create it.
 
-iFlyTek Web(Chinese site):
+iFlyTek Web(Chinese site,No Global):
 
 https://www.xfyun.cn/
 
-iFlyTek Web(English site):
+iFlyTek Web(English site,Global):
 
 https://global.xfyun.cn/
 
-This plugin doesn't support Global Webp API ,although code is similar.
+Although the code is similar,Only when iFlyTek supports Web API in these regions,this plugin can work .
 
-You have to register your account and manage your App information through Chinese site.
+You have to register your account and manage your App information through different sites.
 
 It is not very difficult to do . You can translate this web page directly through the browser tool.
 
@@ -48,9 +55,26 @@ Be careful that some functions are not free.Howover,You can try it for free in a
   
 ### 2.Set App Information To Plugin
 
+ASRG needs:  
+
+App_ID_RealTimeASR_Global,  
+API_Secret_RealTimeASR_Global,  
+API_Key_RealTimeASR_Global
+
+![image](DocumentPictures/ASRG_Console.png)  
+
+TTSG needs:
+
+App_ID_OnlineTTS_Global  
+API_Secret_OnlineTTS_Global  
+API_Key_OnlineTTS_Global  
+
+
+![image](DocumentPictures/TTSG_ConsoleCenter_Before.png)  
+
 STT needs:
 
-AppID_RealTimeSTT,	APIKey_RealTimeSTT;  
+App_ID_RealTimeSTT,	API_Key_RealTimeSTT;  
 
 The Picture after it was translated by the browsing tools is as follow:
 
@@ -58,7 +82,7 @@ The Picture after it was translated by the browsing tools is as follow:
 
 TTS needs:
 
-AppID_TTSStream,	APIKey_TTSStream,	API_Secret_TTSStream;
+App_ID_TTSStream,	API_Key_TTSStream,	API_Secret_TTSStream;
 
 The Picture after it was translated by the browsing tools is as follow:
 
@@ -66,7 +90,9 @@ The Picture after it was translated by the browsing tools is as follow:
 
 Spark needs:
 
-AppID_Spark,	APIKey_Spark,	API_Secret_Spark;  
+Different Spakrversion shares the same App information,but the calculation method is different.
+
+App_ID_Spark,	API_Key_Spark,	API_Secret_Spark;  
 
 The Picture after it was translated by the browsing tools is as follow:  
 
@@ -82,7 +108,7 @@ Be careful that APIKey and APISecret are confused simply.
 ![image](DocumentPictures/XunFeiLinkSettings.png)     
 
 
-### 3.Begin Or Stop RealTime STT
+### 3.Begin Or Stop RealTime STT(No Global)
   
 ![image](DocumentPictures/STTBegin.png)      
 
@@ -288,9 +314,45 @@ You can keep it default for test at first.
 
 Same to Blueprint.
 
-![image](DocumentPictures/STTC++.png)  
 
-### 4.Begin TTS Sream  
+```
+
+	/**
+	 * XunFeiBeginRealTimeSpeechToText
+	 *
+	 * @param WorldContextObject				WorldContext
+	 * @param InRealTimeSTTReqInfo				RealTimeSpeechToTextSettings,you can do nothing to keep default.
+	 * Default lanaguge is Chinese,you can change to Chinese to Enginsh,such as "cn"->"en". Default No Translate,just Src.if you need to translate,you need to open it function in XunFei web.
+	 * @param InInitRealTimeSTTDelegate			Tell you whether to success to create socket to XunFei and begin to audio capture.
+	 * if your app key and id are not right,you will fail.if your audio input device is not good,you will fail.
+	 * Suggest audio input [48000 kHz,16 bits, 2 channle][48000 kHz,16 bits, 1 channle][16000 kHz,16 bits, 1 channle],thest can work well.
+	 * @param InRealTimeSTTNoTranslateDelegate	Give you Src Speech to Text .
+	 * @param InRealTimeSTTTranslateDelegate	Give you Src Speech to Text Src and Target Translate Text.
+	 * If your app Id support and you open it in this plugin.More to look XunFeiDoc.
+	 */
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "XunFeiBeginRealTimeSpeechToText", WorldContext = "WorldContextObject",
+		Keywords = "XG XunFei STT SPeech To Text "), Category = "XGXunFeiLink|STT")
+	static void XGXunFeiBeginRealTimeSpeechToText(const UObject* WorldContextObject,
+		FXGXunFeiRealTimeSTTReqInfo InRealTimeSTTReqInfo,
+		FXGXunFeiInitRealTimeSTTDelegate InInitRealTimeSTTDelegate,
+		FXGXunFeiRealTimeSTTNoTranslateDelegate InRealTimeSTTNoTranslateDelegate,
+		FXGXunFeiRealTimeSTTTranslateDelegate InRealTimeSTTTranslateDelegate);
+
+
+	/**
+	 *
+	 * XunFeiStopRealTimeSpeechToText
+	 *
+	 * @param WorldContextObject WorldContext
+	 */
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "XunFeiStopRealTimeSpeechToText", WorldContext = "WorldContextObject",
+		Keywords = "XG XunFei STT SPeech To Text "), Category = "XGXunFeiLink|STT")
+	static void XGXunFeiStopRealTimeSpeechToText(const UObject* WorldContextObject);
+
+```
+
+
+### 4.Begin TTS Sream  (No Global)
   
 ![image](DocumentPictures/TTS_Blueprint.png)    
 
@@ -457,9 +519,31 @@ The Picture Shows where to add a new speeker.
 
 #### 4.4 C++API  
 
-![image](DocumentPictures/TTS_C++.png)      
+```
+	/**
+	 * XGXunFeiTextToSpeech
+	 *
+	 * @param WorldContextObject		WorldContext
+	 * @param InText					The Str you want to Convert to Audio
+	 * @param bInSaveToLocal			Whether to Save to local disk
+	 * @param InSaveFileFullPath		The FilePath which the wmv file will save to .
+	 * This directory must exist,and the file name must end with ".wav"
+	 * This path is absoult path!
+	 * @param InXunFeiTTSReqInfo		About TTS Settins,more to look iflytesk document.you can choos which voice to say,and so on.
+	 * @param OnXunFeiTTSSuccess		if success ,you will get USoundWave.
+	 * @param OnXunFeiTTSFail			if faile,you will get reason.
+	 */
+	static void XGXunFeiTextToSpeech(UObject* WorldContextObject,
+		const FString& InText,
+		bool bInSaveToLocal,
+		const FString& InSaveFileFullPath,
+		FXGXunFeiTTSReqInfo InXunFeiTTSReqInfo,
+		FXGXunFeiTTSDelegate OnXunFeiTTSSuccess,
+		FXGXunFeiTTSDelegate OnXunFeiTTSFail);
 
-### 5. Begin Sprak    
+```
+
+### 5. Begin Sprak    (No Global)
 
 ![image](DocumentPictures/Spark_Begin.png)
 
@@ -616,8 +700,395 @@ If you do not have the histroy ,the last text will be the only element in the ar
 #### 5.4 C++ API  
 
 
-![image](DocumentPictures/Spark_C++.png)      
+```
+	/**
+	 * Connect to iFlyTek Spark
+	 *
+	 * @param WorldContextObject		WolrdContext
+	 * @param InSparkVersion			Which Spark version you choose to use. (V1.5,V2.0,V3.0)
+	 * @param InXunFeiSparkReqInfo		The important infomation about Spakr settings.
+	 * @param OnXunSparkSuccess			if success ,you will get text.
+	 * @param OnXunSparkFail			if faile,you will get reason.
+	 */
+	static void XGXunFeiSpark(UObject* WorldContextObject,
+		EXGXunFeiSparkVersion InSparkVersion,
+		FXGXunFeiSparkReqInfo InXunFeiSparkReqInfo,
+		FXGXunFeiSparkDelegate OnXunSparkSuccess,
+		FXGXunFeiSparkDelegate OnXunSparkFail);
 
+```
+
+
+
+### 6. Begin ASRG    (Global)
+  
+This API is similar with STT.  
+
+![image](DocumentPictures/ASRG_Begin.png)      
+
+You can call XunFeiBeginRealTimeASRG to begin ASRG.
+
+You can call XunFeiStopRealTimeASRG to end ASRG.
+
+It captures audio data from audio input device,and then send it to iFLyTek Web API.
+
+It will call you to recive results.
+
+It calls you to recive results ,src text.
+
+#### 6.1 Be Careful:
+
+Defualt audio input device must in
+
+[48000 kHz,16 bits, 2 channle],
+
+[48000 kHz,16 bits, 1 channle],
+
+[16000 kHz,16 bits, 1 channle].
+
+If your audio input device is not right,you wil not get src text or dst text.  
+
+#### 6.2 Delegate:  
+
+![image](DocumentPictures/ASRG_Show.png)  
+
+InitRealTimeASRGDelegate: Tell you whethe to create the connection to iFlyTek successfully.
+If you fail,you will get the reason.  
+
+ASRGTextDelegate:After create the connection successfully,you can get every sentence src text.
+
+
+#### 6.3 ReqInfo:
+  
+![image](DocumentPictures/ASRG_ReqInfo.png)  
+```
+	/**
+	 * Parameter:language
+	 * Type:string
+	 * Required:Yes
+	 * Description:Along with the domain and accent parameters in each engine type. For the detailed relationship, see the parameter list below.
+	 *
+	 * Languages:Chinese,English
+	 * Parameter:zh_cn,en_us
+	 * accent:mandarin,mandarin
+	 * domain:ist_open,ist_open
+	 * Note:sms_ed_open,sms_en_open,
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek ASRG")
+	FString language = TEXT("en_us");
+```
+```
+	/**
+	 * Parameter:domain
+	 * Type:string
+	 * Required:Yes
+	 * Description:Along with the domain and accent parameters in each engine type. For the detailed relationship, see the parameter list below.
+	 *
+	 * Languages:Chinese,English
+	 * Parameter:zh_cn,en_us
+	 * accent:mandarin,mandarin
+	 * domain:ist_open,ist_open
+	 * Note:sms_ed_open,sms_en_open,
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek ASRG")
+	FString domain = TEXT("ist_open");
+```
+```
+	/**
+	 * Parameter:accent
+	 * Type:string
+	 * Required:Yes
+	 * Description:Along with the domain and accent parameters in each engine type. For the detailed relationship, see the parameter list below.
+	 *
+	 * Languages:Chinese,English
+	 * Parameter:zh_cn,en_us
+	 * accent:mandarin,mandarin
+	 * domain:ist_open,ist_open
+	 * Note:sms_ed_open,sms_en_open,
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek ASRG")
+	FString accent = TEXT("mandarin");
+```
+```
+	/**
+	 * Parameter:dwa
+	 * Type:string
+	 * Required:No
+	 * Description:	
+	 * Engine extension parameters.
+	 *		Wpgs: used to enable the streaming result return feature
+	 *		Note: This expanded feature cannot be used without AppID, you can activate it at the console- Real-time ASR (Automatic Speech Recognition)
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek ASRG")
+	FString dwa = TEXT("Wpgs");
+```
+
+```
+	/**
+	 * Parameter:punc
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 * Punctuation control (with punctuation by default). Pass punc=0 to disabled punctuation.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek ASRG")
+	int32 punc = 1;
+```
+```
+	/**
+	 * Parameter:punc
+	 * Type:string
+	 * Required:No
+	 * Description:	Punctuation filter control, punc is returned by default, punc=0 will filter punctuation in the results
+	 * Example: 0
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString punc = TEXT("None");
+```
+```
+	/**
+	 * Parameter:nunum
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 * 	Ruling the number format
+	 *  0: Disabled 1: Enabled
+	 *  (The default is 1)
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek ASRG")
+	int32 nunum = 1;
+```
+
+You can keep it default for test at first.
+
+#### 6.4 C++ API
+
+Same to Blueprint.
+
+```
+	/**
+	 * XunFeiBeginAutomatedSpeechRecognitionGlobal
+	 *
+	 * @param WorldContextObject				WorldContext
+	 * @param InRealTimeASRGReqInfo				RealTime Automated Speech Recognition Settings,you can do nothing to keep default.
+	 * @param InInitRealTimeASRGDelegate		Tell you whether to success to create socket to XunFei and begin to audio capture.
+	 *
+	 * if your app key and id are not right,you will fail.if your audio input device is not good,you will fail.
+	 *
+	 * Suggest audio input [48000 kHz,16 bits, 2 channle][48000 kHz,16 bits, 1 channle][16000 kHz,16 bits, 1 channle],thest can work well.
+	 *
+	 * @param InRealTimeASRGTextDelegate	Give you Src Speech to Text .
+	 *
+	 * If your app ID support and you open it in this plugin.More to look XunFeiDoc.
+	 */
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "XunFeiBeginRealTimeASRGlobal", WorldContext = "WorldContextObject",
+		Keywords = "XG XunFei STT SPeech To Text ASR Global"), Category = "XGXunFeiLink|ASRG")
+	static void XGXunFeiBeginAutomatedSpeechRecognitionGlobal(const UObject* WorldContextObject,
+		FXGXunFeiRealTimeASRGReqInfo InRealTimeASRGReqInfo,
+		FXGXunFeiInitRealTimeASRGelegate InInitRealTimeASRGDelegate,
+		FXGXunFeiRealTimeASRGTextDelegate InRealTimeASRGTextDelegate);
+
+```
+
+
+
+
+### 7. Begin TTSG    (Global)
+
+This API is similar with TTS.
+
+![image](DocumentPictures/TTSG_Show.png)    
+
+You can call XunFeiTextToSpeechGlobal to begin TTSG.
+
+It is a async blueprint node.
+
+It converts text to USoundWave and wav file.
+
+#### 7.1 Be Careful:
+
+You have to input the text to convert it.
+
+If you enable bSaveToLocal,you must input the right and absolute file path.
+
+The directory must exist.
+
+The file name must end with ".wav"
+
+You can keep it default for test at first.
+
+#### 7.2 Delegate:
+
+On Success: you will get the USoundWave
+
+On Fail:you will get nullptr and reason.
+
+#### 7.3 ReqInfo:
+
+![image](DocumentPictures/TTSG_Reqinfo.png)    
+```
+	/**
+	 * Parameter:vcn
+	 * Type:string
+	 * Required:Yes
+	 * Description:
+	 *		Speaker, optional value: 
+	 *		Please add it at the console for trial or purchase. 
+	 *		After it is added, the speaker parameter value will be displayed.
+	 *		"x_xiaoyan"
+	 *		"xiaoyan",
+	 *		"aisjiuxu",
+	 *		"aisxping",
+	 *		"aisjinger",
+	 *		"aisbabyxu"
+	 *		......
+	 * Example:
+	 *		"xiaoyan"
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTSG")
+	FString vcn = TEXT("xiaoyan");
+
+```
+
+```
+	/**
+	 * Parameter:speed
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		Speech rate, optional value: [0-100], 50 by default
+	 * Example:
+	 *		50
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTSG")
+	int32 speed = 50;
+
+```
+
+
+```
+	/**
+	 * Parameter:volume
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		Volume, optional value: [0-100], 50 by default
+	 * Example:
+	 *		50
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTSG")
+	int32 volume = 50;
+
+```
+
+```
+	/**
+	 * Parameter:pitch
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		Pitch, optional value: [0-100], 50 by default
+	 * Example:
+	 *		50
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTSG")
+	int32 pitch = 50;
+
+```
+
+```
+
+	/**
+	 * Parameter:bgs
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *			Background sound of synthesized audio
+	 *			0: without background sound (default)
+	 *			1: with background sound
+	 * Example:
+	 *		0
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTSG")
+	int32 bgs = 0;
+
+```
+```
+
+
+	/**
+	 * Parameter:reg
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Setting the pronunciation mode for English:
+	 *			0：Automatic judgment and processing, if not sure, it will be processed as per spelling of English words (default)
+	 *			1：All English is pronounced alphabetically
+	 *			2：Automatic judgment and processing, if not sure, it will be read aloud as per letters.
+	 *			The pronunciation is as per English word by default.
+	 * Example:
+	 *		"2"
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTSG")
+	FString reg = TEXT("2");
+
+```
+```
+	/**
+	 * Parameter:rdn
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Pronunciation mode of synthesized audio numbers
+	 *		0: Automatic judgment (default value)
+	 *		1: Full value
+	 *		2: Complete string
+	 *		3: String first
+	 * Example:		"0"
+	 *
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG iFylTek TTSG")
+	FString rdn = TEXT("0");
+
+```
+
+
+You can keep it default for test at first.
+
+The Picture Shows where to add a new speeker.
+![image](DocumentPictures/TTSG_Speaker.png)    
+
+#### 7.4 C++API  
+
+```
+
+	/**
+	 * XGXunFeiOnlineTextToSpeechGlobal
+	 *
+	 * @param WorldContextObject		WorldContext
+	 * @param InText					The Str you want to Convert to Audio
+	 * @param bInSaveToLocal			Whether to Save to local disk
+	 * @param InSaveFileFullPath		The FilePath which the wmv file will save to .
+	 * This directory must exist,and the file name must end with ".wav"
+	 * This path is absoult path!
+	 * @param InXunFeiTTSGReqInfo		About TTS Settins,more to look iflytesk document.you can choos which voice to say,and so on.
+	 * @param OnXunFeiTTSGSuccess		if success ,you will get USoundWave.
+	 * @param OnXunFeiTTSGFail			if faile,you will get reason.
+	 */
+	static void XGXunFeiOnlineTextToSpeechGlobal(UObject* WorldContextObject,
+		const FString& InText,
+		bool bInSaveToLocal,
+		const FString& InSaveFileFullPath,
+		FXGXunFeiTTSGReqInfo InXunFeiTTSGReqInfo,
+		FXGXunFeiTTSGDelegate OnXunFeiTTSGSuccess,
+		FXGXunFeiTTSGDelegate OnXunFeiTTSGFail);
+```
 
 ### Framwork  
 
@@ -635,6 +1106,12 @@ TTS Module
 
 XGXunFeiSpark    
 Spark Module
+
+XGXunFeiASRG    
+ASRG Module
+
+XGXunFeiTTSG    
+TTSG Module
 
 XGXunFeiOther
 ......(to be added)
@@ -667,7 +1144,9 @@ public class XGXunFeiDemo : ModuleRules
 			"XGXunFeiCore",
 			"XGXunFeiSTT",
 			"XGXunFeiTTS",
-			"XGXunFeiSpark"
+			"XGXunFeiSpark",
+			"XGXunFeiTTSG",
+			"XGXunFeiASRG"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
