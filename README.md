@@ -930,6 +930,9 @@ On Fail:you will get nullptr and reason.
 #### 7.3 ReqInfo:
 
 ![image](DocumentPictures/TTSG_Reqinfo.png)    
+
+  
+  
 ```
 	/**
 	 * Parameter:vcn
