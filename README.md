@@ -15,6 +15,10 @@ It contains two parts:
 The First  is the XGXunFeiLink plugin, which is commercial.You can purchase it through Unreal Engine Marketplace.The part of code is only for learning.
 The Second is the XGKeDaXunFeiSoud plugin,which is just study demo code. Please do not use it in a formal situation.
 
+Demo Video URL:
+https://youtu.be/6NQ4PO2RpOU
+
+
 ## XGXunFeiLink  
 
 ### 0.Important Things
