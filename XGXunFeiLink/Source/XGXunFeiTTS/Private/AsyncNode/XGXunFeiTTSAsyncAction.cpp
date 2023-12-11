@@ -5,11 +5,15 @@
 #include "WebSocketsModule.h"
 #include "IWebSocket.h"
 #include "JsonObjectConverter.h"
-
+#include "Async/Async.h"
+#include "Async/TaskGraphInterfaces.h"
 #include "Misc/Paths.h"
 #include "Misc/Base64.h"
 #include "Misc/FileHelper.h"
 #include "Containers/StringConv.h"
+#include "Sound/SoundWave.h"
+
+
 #include "XGXunFeiCoreSettings.h"
 #include "XGXunFeiCoreBPLibrary.h"
 #include "LogXGXunFeiTTS.h"
@@ -21,6 +25,11 @@ UXGXunFeiTTSAsyncAction::UXGXunFeiTTSAsyncAction(const FObjectInitializer& Objec
 {
 
 
+}
+
+UXGXunFeiTTSAsyncAction::~UXGXunFeiTTSAsyncAction()
+{
+	RealeaseResources();
 }
 
 
@@ -45,9 +54,10 @@ UXGXunFeiTTSAsyncAction* UXGXunFeiTTSAsyncAction::XGXunFeiTextToSpeech(
 
 	return XunFeiTTSAsyncAction;
 }
-void UXGXunFeiTTSAsyncAction::Activate()
+
+
+void UXGXunFeiTTSAsyncAction::Activate_Internal()
 {
-	Super::Activate();
 
 	if (bSaveToLocal)
 	{
@@ -58,37 +68,59 @@ void UXGXunFeiTTSAsyncAction::Activate()
 
 		if (!bDirectory)
 		{
-			FString Message = FString::Printf(TEXT("[%s]:FileDirectory don't exist ! FilePath: [%s]"), *FString(__FUNCTION__), *SaveFileFullPath);
+			FString DirectoryErrorMessage = FString::Printf(TEXT("FileDirectory don't exist ! FilePath: [%s]"),*SaveFileFullPath);
 
-			UE_LOG(LogXGXunFeiTTS, Error, TEXT("%s"), *Message);
-			OnFail.Broadcast(false, Message, nullptr);
+			UE_LOG(LogXGXunFeiTTS, Error, TEXT("[%s]:[%s]"), *FString(__FUNCTION__), *DirectoryErrorMessage);
+
+			CallOnFail(false,DirectoryErrorMessage);
+
 			RealeaseResources();
+
+			return;
 		}
 
 		if (!bExtension)
 		{
-			FString Message = FString::Printf(TEXT("[%s]:FileName is Wrong,it must endwith [.wav] ! FilePath: [%s]"), *FString(__FUNCTION__), *SaveFileFullPath);
-			UE_LOG(LogXGXunFeiTTS, Error, TEXT("%s"), *Message);
-			OnFail.Broadcast(false, Message, nullptr);
+			FString FileNameErroeMessage = FString::Printf(TEXT("FileName is Wrong,it must endwith [.wav] ! FilePath: [%s]"), *FString(__FUNCTION__), *SaveFileFullPath);
+			
+			UE_LOG(LogXGXunFeiTTS, Error, TEXT("[%s]:[%s]"), *FString(__FUNCTION__), *FileNameErroeMessage);
+
+			CallOnFail(false, FileNameErroeMessage);
+			
 			RealeaseResources();
+
+			return;
 		}
 
 	}
 
 	if (XunFeiText.IsEmpty())
 	{
-		FString Message = FString::Printf(TEXT("[%s]:InText is Empty,it must be input!"), *FString(__FUNCTION__));
-		UE_LOG(LogXGXunFeiTTS, Error, TEXT("%s"), *Message);
-		OnFail.Broadcast(false, Message, nullptr);
+		FString TextErrorMessage = FString::Printf(TEXT("InText is Empty,it must be input!"));
+
+		UE_LOG(LogXGXunFeiTTS, Error, TEXT("[%s]:[%s]"), *FString(__FUNCTION__), *TextErrorMessage);
+
+		CallOnFail(false, TextErrorMessage);
+
 		RealeaseResources();
+
+		return;
 	}
 
-	CreateXunFeiTTSSocket();
+	AsyncTask(ENamedThreads::GameThread,[this](){
+
+		CreateXunFeiTTSSocket();
+	});
+
 
 }
 
 void UXGXunFeiTTSAsyncAction::RealeaseResources()
 {
+	OnSuccess.Clear();
+	
+	OnFail.Clear();
+	
 	CloseXunFeiTTsSocket();
 
 	XunFeiAudioData.Empty();
@@ -99,9 +131,9 @@ void UXGXunFeiTTSAsyncAction::RealeaseResources()
 
 void UXGXunFeiTTSAsyncAction::CreateXunFeiTTSSocket()
 {
-	FString APPID = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->AppID;
-	FString APIKey = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->APIKeyTTSStream;
-	FString APISecret = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->APISecretTTSStream;
+	FString APPID = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->AppID_TTSStream;
+	FString APIKey = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->APIKey_TTSStream;
+	FString APISecret = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->APISecret_TTSStream;
 
 	FString HttpDate = FDateTime::Now().UtcNow().ToHttpDate();
 
@@ -159,30 +191,24 @@ void UXGXunFeiTTSAsyncAction::OnConnected()
 
 	UE_LOG(LogXGXunFeiTTS, Display, TEXT("%s"), *FString(__FUNCTION__));
 
+	//UE_LOG(LogTemp, Error, TEXT("Src:[%s]"), *XunFeiText);
 
-	UE_LOG(LogTemp, Error, TEXT("Src:[%s]"), *XunFeiText);
-
-	auto UTF8String= StringCast<UTF8CHAR>(*XunFeiText);
-
+	auto UTF8String = StringCast<UTF8CHAR>(*XunFeiText);
 	FString Base64XunFeiText = FBase64::Encode((uint8*)UTF8String.Get(), UTF8String.Length());
 
-	TArray<uint8> BackUTF8;
-    FBase64::Decode(Base64XunFeiText, BackUTF8);
-	
-	//check right str after encode~
+	//	//check right str after encode~
+	//TArray<uint8> BackUTF8;
+	//FBase64::Decode(Base64XunFeiText, BackUTF8);
 	//FString Reulust = StringCast<TCHAR>((UTF8CHAR*)BackUTF8.GetData(), BackUTF8.Num()).Get();
 	//UE_LOG(LogTemp,Error,TEXT("[%s]"), *Reulust);
 
 
-	XunFeiTTSReqInfo.common.app_id = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->AppID;
+	XunFeiTTSReqInfo.common.app_id = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->AppID_TTSStream;
 	XunFeiTTSReqInfo.data.text = Base64XunFeiText;
 
 	XunFeiTTSReqInfo.business.speed = FMath::Clamp(XunFeiTTSReqInfo.business.speed, 0, 100);
 	XunFeiTTSReqInfo.business.volume = FMath::Clamp(XunFeiTTSReqInfo.business.volume, 0, 100);
 	XunFeiTTSReqInfo.business.pitch = FMath::Clamp(XunFeiTTSReqInfo.business.pitch, 0, 100);
-
-
-
 
 	FString JsonStr;
 	FJsonObjectConverter::UStructToJsonObjectString(XunFeiTTSReqInfo, JsonStr);
@@ -195,15 +221,19 @@ void UXGXunFeiTTSAsyncAction::OnConnectionError(const FString& ErrorMessage)
 {
 	UE_LOG(LogXGXunFeiTTS, Error, TEXT("[%s]:ConnectError,Message:[%s]!"), *FString(__FUNCTION__), *ErrorMessage);
 
-	OnFail.Broadcast(false, ErrorMessage, nullptr);
+	CallOnFail(false, ErrorMessage);
 	RealeaseResources();
+
 }
 
 void UXGXunFeiTTSAsyncAction::OnClosed(int32 StatusCode, const FString& Reason, bool bWasClean)
 {
 	UE_LOG(LogXGXunFeiTTS, Warning, TEXT("[%s]:ConnectOnClosed,StatusCode:[%d],Reason:[%s],bWasClean:[%s]!"),
 		*FString(__FUNCTION__), StatusCode, *Reason, bWasClean ? TEXT("true") : TEXT("false"));
+	
 	RealeaseResources();
+
+
 }
 
 void UXGXunFeiTTSAsyncAction::OnMessage(const FString& Message)
@@ -230,8 +260,7 @@ void UXGXunFeiTTSAsyncAction::OnMessage(const FString& Message)
 
 		if (Status == 2)
 		{
-			
-
+			//TODO Async
 			if (bSaveToLocal)
 			{
 				TArray<uint8> WaveData;
@@ -242,8 +271,10 @@ void UXGXunFeiTTSAsyncAction::OnMessage(const FString& Message)
 
 			USoundWave* SoundWave = UXGXunFeiCoreBPLibrary::ImportPCMToSoundWave(XunFeiAudioData);
 
-			UE_LOG(LogXGXunFeiTTS, Display, TEXT("Text To SPeech Success!"));
-			OnSuccess.Broadcast(true, TEXT("Text To SPeech Success!"), SoundWave);
+			UE_LOG(LogXGXunFeiTTS, Log, TEXT("[%s]:Text To SPeech Success!"),*FString(__FUNCTION__));
+
+			CallOnSuccess(true, TEXT("Text To SPeech Success!"), SoundWave);
+
 			RealeaseResources();
 		}
 
@@ -251,16 +282,17 @@ void UXGXunFeiTTSAsyncAction::OnMessage(const FString& Message)
 	}
 	else
 	{
-		FString ErrorMessage = FString::Printf(TEXT("[%s]-MessageError-Code:[%d]-Message:[%s]-sid-[%s]"),
-			*FString(__FUNCTION__),
+		FString ErrorMessage = FString::Printf(TEXT("MessageError-Code:[%d]-Message:[%s]-sid-[%s]"),
 			XunFeiTTSRespInfo.code,
 			*(XunFeiTTSRespInfo.message),
 			*(XunFeiTTSRespInfo.sid));
 
-		UE_LOG(LogXGXunFeiTTS, Error, TEXT("[%s]"), *ErrorMessage);
-		OnFail.Broadcast(false, ErrorMessage,nullptr);
+		UE_LOG(LogXGXunFeiTTS, Error, TEXT("[%s]:[%s]"), *FString(__FUNCTION__), *ErrorMessage);
+		
+		CallOnFail(false, ErrorMessage);
+
 		RealeaseResources();
-	
+
 	}
 
 
@@ -269,5 +301,33 @@ void UXGXunFeiTTSAsyncAction::OnMessage(const FString& Message)
 
 void UXGXunFeiTTSAsyncAction::OnMessageSent(const FString& MessageString)
 {
+
+
+}
+
+void UXGXunFeiTTSAsyncAction::CallOnSuccess(bool InbResult, FString InMessage, USoundWave* InSoundWavePtr)
+{
+	FXGXunFeiTTSDelegate TempXunFeiTTSDelegate = OnSuccess;
+	InSoundWavePtr->AddToRoot();
+	AsyncTask(ENamedThreads::GameThread, [=]() {
+
+		InSoundWavePtr->RemoveFromRoot();
+
+		TempXunFeiTTSDelegate.Broadcast(InbResult, InMessage, InSoundWavePtr);
+
+
+		});
+}
+
+void UXGXunFeiTTSAsyncAction::CallOnFail(bool InbResult, FString InMessage, USoundWave* InSoundWavePtr)
+{
+	FXGXunFeiTTSDelegate TempXunFeiTTSDelegate = OnFail;
+
+	AsyncTask(ENamedThreads::GameThread, [=]() {
+
+		TempXunFeiTTSDelegate.Broadcast(InbResult, InMessage, InSoundWavePtr);
+
+
+		});
 
 }

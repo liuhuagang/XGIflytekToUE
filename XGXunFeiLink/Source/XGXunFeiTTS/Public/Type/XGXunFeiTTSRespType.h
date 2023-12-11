@@ -14,31 +14,31 @@ public:
 
 
 	/**
-	 * 参数名:audio
-	 * 类型:string
-	 * 描述:
-	 *		合成后的音频片段，采用base64编码
+	 * Parameter:audio
+	 * Type:string
+	 * Description:
+	 *		The synthesized audio snippets are encoded in base64
 	 *
 	 */
 	UPROPERTY()
 	FString audio=TEXT("");
 
 	/**
-	 * 参数名:code
-	 * 类型:int
-	 * 描述:
-	 *		当前音频流状态，1表示合成中，2表示合成结束
+	 * Parameter:code
+	 * Type:int
+	 * Description:
+	 *		Current audio stream status, 1 indicates synthesis, 2 indicates synthesis end
 	 *
 	 */
 	UPROPERTY()
 	int32 status = -1;
 
 	/**
-	 * 参数名:ced
-	 * 类型:string
-	 * 描述:
-	 *		合成进度，指当前合成文本的字节数
-	 *		注：请注意合成是以句为单位切割的，若文本只有一句话，则每次返回结果的ced是相同的。
+	 * Parameter:ced
+	 * Type:string
+	 * Description:
+	 *		Synthesis progress refers to the number of bytes of the current synthesized text
+	 *		Note: Please note that the composition is cut by sentence, if there is only one sentence of text, the ced is the same each time the result is returned.
 	 *
 	 */
 	UPROPERTY()
@@ -59,40 +59,40 @@ struct XGXUNFEITTS_API FXGXunFeiTTSRespInfo
 public:
 
 	/**
-	 * 参数名:code
-	 * 类型:int
-	 * 描述:
-	 *		返回码，0表示成功，其它表示异常，详情请参考错误码。
+	 * Parameter:code
+	 * Type:int
+	 * Description:
+	 *		Return code, 0 indicates success, other indicates exception. For details, see the error code.
 	 *
 	 */
 	UPROPERTY()
 	int32 code=-1;
 
 	/**
-	 * 参数名:message
-	 * 类型:string
-	 * 描述:
-	 *		描述信息
+	 * Parameter:message
+	 * Type:string
+	 * Description:
+	 *		Description
 	 *
 	 */
 	UPROPERTY()
 	FString message=TEXT("");
 
 	/**
-	 * 参数名:data
-	 * 类型:object
-	 * 描述:
-	 *		data可能返回为null，参考示例代码时，注意进行非空判断
+	 * Parameter名:data
+	 * Type:object
+	 * Description:
+	 *		data may be returned as null. When referring to the Example code, be careful to make a non-null judgment
 	 *
 	 */
 	UPROPERTY()
 	FXGXunFeiTTSRespInfoData data;
 
 	/**
-	 * 参数名:sid
-	 * 类型:string
-	 * 描述:
-	 *		本次会话的id，只在第一帧请求时返回
+	 * Parameter名:sid
+	 * Type:string
+	 * Description:
+	 *		The id of this session is returned only on the first frame request
 	 *
 	 */
 	UPROPERTY()

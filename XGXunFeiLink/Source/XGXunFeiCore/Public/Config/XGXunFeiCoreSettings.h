@@ -29,17 +29,32 @@ public:
 
 public:
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "XunFei Common")
-	FString AppID;
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "RealTime SpeechToText")
+	FString AppID_RealTimeSTT;
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Real Time Speech To Text")
-	FString APIKeyRealTimeSTT;
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "RealTime SpeechToText")
+	FString APIKey_RealTimeSTT;
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Text To Speech Stream")
-	FString APIKeyTTSStream;
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Text To Speech Stream")
-	FString APISecretTTSStream;
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "TextToSpeech Stream")
+	FString AppID_TTSStream;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "TextToSpeech Stream")
+	FString APIKey_TTSStream;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "TextToSpeech Stream")
+	FString APISecret_TTSStream;
+
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Spark")
+	FString AppID_Spark;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Spark")
+	FString APIKey_Spark;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Spark")
+	FString APISecret_Spark;
+
 
 
 

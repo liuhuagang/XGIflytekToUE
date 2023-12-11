@@ -10,6 +10,7 @@ public class XGXunFeiCore : ModuleRules
 
         PublicIncludePaths.AddRange(
             new string[] {
+             "$(ModuleDir)/Public/AsyncAction",
              "$(ModuleDir)/Public/Config",
             }
             );
@@ -17,6 +18,7 @@ public class XGXunFeiCore : ModuleRules
 
         PrivateIncludePaths.AddRange(
             new string[] {
+               "XGXunFeiCore/Public/AsyncAction",
                "XGXunFeiCore/Public/Config",
                "XGXunFeiCore/Public/Type"
             }

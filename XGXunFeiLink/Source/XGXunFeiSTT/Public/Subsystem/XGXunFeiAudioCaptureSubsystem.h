@@ -40,11 +40,13 @@ protected:
 
 	bool GetAudioCaptureDeviceInfo(FAudioCaptureDeviceInfo& OutInfo);
 
-	void AppendVoiceData(const TArray<float>& InVoiceData);
 
-	bool GetVoiceData(TArray<float>& OutVoiceData);
 
-	void ClearVoiceData();
+	static void AppendVoiceData(const TArray<float>& InVoiceData);
+
+	static bool GetVoiceData(TArray<float>& OutVoiceData);
+
+	static void ClearVoiceData();
 
 	static void OnAudioGenerate(const float* InAudio, int32 NumSamples);
 
@@ -58,9 +60,9 @@ protected:
 
 	FAudioGeneratorHandle AudioGeneratorHandle;
 
-	FCriticalSection VoiceDataSection;
+	static FCriticalSection VoiceDataSection;
 
-	TArray<float> VoiceData;
+	static TArray<float> VoiceData;
 
 
 };

@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Kismet/BlueprintAsyncActionBase.h"
 
+#include "XGXunFeiCoreAsyncAction.h"
 #include "XGXunFeiTTSReqType.h"
 
 #include "XGXunFeiTTSAsyncAction.generated.h"
@@ -14,13 +14,14 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FXGXunFeiTTSDelegate, bool, bResu
 
 
 class IWebSocket;
+class USoundWave;
 /**
  *	UXGXunFeiTTSAsyncAction
  *	Connect to iFlyTek Text To Speech Stream Webp Api
- *	
+ *
  */
 UCLASS()
-class XGXUNFEITTS_API UXGXunFeiTTSAsyncAction : public UBlueprintAsyncActionBase
+class XGXUNFEITTS_API UXGXunFeiTTSAsyncAction : public UXGXunFeiCoreAsyncAction
 {
 	GENERATED_BODY()
 
@@ -30,20 +31,21 @@ public:
 
 	UXGXunFeiTTSAsyncAction(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual ~UXGXunFeiTTSAsyncAction();
 
 protected:
 	/**
 	 * XGXunFeiTextToSpeech BlueprintNode
 	 * If you want to use in C++,please see XGXunFeiLinkBPLibrary.h .
-	 * 
+	 *
 	 * @param WorldContextObject		WorldContext
 	 * @param InText					The Str you want to Convert to Audio
 	 * @param bInSaveToLocal			Whether to Save to local disk
 	 * @param InSaveFileFullPath		The FilePath which the wmv file will save to .
-	 * This directory must exist,and the file name must end with ".wav"  
+	 * This directory must exist,and the file name must end with ".wav"
 	 * This path is absoult path!
 	 * @param InXunFeiTTSReqInfo		About TTS Settins,more to look iflytesk document.you can choos which voice to say,and so on.
-	 * @return 
+	 * @return
 	 */
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true",
 		WorldContext = "WorldContextObject",
@@ -60,7 +62,10 @@ protected:
 
 public:
 
-	virtual void Activate() override;
+
+
+
+	virtual void Activate_Internal();
 
 
 protected:
@@ -82,6 +87,9 @@ protected:
 	void OnClosed(int32 StatusCode, const FString& Reason, bool bWasClean);
 	void OnMessage(const FString& Message);
 	void OnMessageSent(const FString& MessageString);
+
+	void CallOnSuccess(bool InbResult, FString InMessage, USoundWave* InSoundWavePtr);
+	void CallOnFail(bool InbResult, FString InMessage, USoundWave* InSoundWavePtr=nullptr);
 
 
 public:

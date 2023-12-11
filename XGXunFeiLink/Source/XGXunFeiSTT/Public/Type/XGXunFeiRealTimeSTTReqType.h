@@ -1,18 +1,27 @@
 // Copyright 2023 Xiao Gang. All Rights Reserved.
+
+/**
+ * Be careful:
+ * This plugin only support China region.
+ *
+ * iFlyTek Real Time Speech To Text Document:
+ * Chinese:
+ * https://www.xfyun.cn/doc/asr/rtasr/API.html
+ *
+ *
+ */
 #pragma once
 #include "CoreMinimal.h"
 
 #include "XGXunFeiRealTimeSTTReqType.generated.h"
 
 
-/**
- * FXGXunFeiRealTimeSTTReqInfo
- * Some RequsetJsonStruct About Real Time SST.
- * 
- * iFlyTek Real Time Speech To Text Document:
- * https://www.xfyun.cn/doc/asr/rtasr/API.html
- *
- */
+ /**
+  * FXGXunFeiRealTimeSTTReqInfo
+  * Some RequsetJsonStruct About Real Time SST.
+  *
+  *
+  */
 USTRUCT(BlueprintType)
 struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTReqInfo
 {
@@ -21,31 +30,31 @@ struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTReqInfo
 protected:
 
 	/**
-	 * 参数:appid
-	 * 类型:string
-	 * 必须:是
-	 * 说明:讯飞开放平台应用ID
-	 * 示例:5f9c6d6a
+	 * Parameter:appid
+	 * Type:string
+	 * Required:Yes
+	 * Description:Appid message applied from the platform
+	 * Example:5f9c6d6a
 	 */
 	UPROPERTY()
 	FString appid;
 
 	/**
-	 * 参数:ts
-	 * 类型:string
-	 * 必须:是
-	 * 说明:当前时间戳，从1970年1月1日0点0分0秒开始到现在的秒数
-	 * 示例:1512041814
+	 * Parameter:ts
+	 * Type:string
+	 * Required:Yes
+	 * Description:Current timestamp, in RFC1123 format
+	 * Example:1512041814
 	 */
 	UPROPERTY()
 	FString ts;
 
 	/**
-	 * 参数:signa
-	 * 类型:string
-	 * 必须:是
-	 * 说明:加密数字签名（基于HMACSHA1算法）
-	 * 示例:IrrzsJeOFk1NGfJHW6SkHUoN9CU=
+	 * Parameter:signa
+	 * Type:string
+	 * Required:Yes
+	 * Description:Encrypted digital signature (based on HMACSHA1 algorithm)
+	 * Example:IrrzsJeOFk1NGfJHW6SkHUoN9CU=
 	 */
 	UPROPERTY()
 	FString signa;
@@ -53,144 +62,152 @@ protected:
 public:
 
 	/**
-	 * 参数:lang
-	 * 类型:string
-	 * 必须:否
-	 * 说明:实时语音转写语种，不传默认为中文
-	 * 示例:
-	 *			语种类型：中文、中英混合识别：cn；
-	 *			英文：en；
-	 *			小语种及方言可到控制台-实时语音转写-方言/语种处添加，添加后会显示该方言/语种参数值。传参示例如："lang=en"
-	 * 若未授权无法使用会报错10110
+	 * Parameter:lang
+	 * Type:string
+	 * Required:No
+	 * Description:Real-time speech transfer language.The default is Chinese.
+	 * Example:
+	 *			Language type：
+	 *			Chinese、ChineseAndEnglish：cn；
+	 *			Engilis：en；
+	 *			Minor languages and dialects can be added from the iFlyTek control panel console.you can get corresponding parameters.
+	 *			ParameterExample："lang=en"
+	 * Error 10110 is reported,  if unauthorised .
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString lang = TEXT("cn");
 
 	/**
-	 * 自定义字段 是否开启翻译功能
-	 * 需要在科大讯飞控制台开通翻译功能
+	 * Custom fields Whether to enable the translation function
+	 * Note: Translation function needs to be enabled on the iFlyTek control panel console.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	bool bEnableTranslate = false;
 
 
 	/**
-	 * 参数:transType
-	 * 类型:string
-	 * 必须:否
-	 * 说明:normal表示普通翻译，默认值normal；
-	 * 示例:	例如：transType="normal"
-	 * 注意：需控制台开通翻译功能
+	 * Parameter:transType
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *				"normal" explains general translation. The default is "normal"；
+	 * Example:	transType="normal"
+	 * Note: Translation function needs to be enabled on the iFlyTek control panel console.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString transType = TEXT("normal");
 
 	/**
-	 * 参数:transType
-	 * 类型:int
-	 * 必须:否
-	 * 说明:	策略1，转写的vad结果直接送去翻译；
-	 *		策略2，返回中间过程中的结果；
-	 *		策略3，按照结束性标点拆分转写结果请求翻译；
-	 *		建议使用策略2
-	 * 示例:	例如：transStrategy=2
-	 * 注意：需控制台开通翻译功能
+	 * Parameter:transType
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		Strategy 1: Transcribe the VAD results directly to be translated;
+	 *		Strategy 2: which returns the results of the intermediate process;
+	 *		Strategy 3: Request a translation based on the final punctuation split transcription result;
+	 *		Policy 2 is recommended.
+	 * Example:
+	 *		transStrategy=2
+	 * Note: Translation function needs to be enabled on the iFlyTek control panel console.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 transStrategy = 2;
 
 
 	/**
-	 * 参数:targetLang
-	 * 类型:string
-	 * 必须:否
-	 * 说明:
-	 *		目标翻译语种：控制把源语言转换成什么类型的语言；
-	 *			请注意类似英文转成法语必须以中文为过渡语言，即英-中-法，暂不支持不含中文语种之间的直接转换；
-	 *			中文：cn
-	 *			英文：en
-	 *			日语：ja
-	 *			韩语：ko
-	 *			俄语：ru
-	 *			法语：fr
-	 *			西班牙语：es
-	 *			越南语：vi
-	 *			广东话：cn_cantonese
-	 * 示例:
-	 *		例如：targetLang="en"
-	 *		如果使用中文实时翻译为英文传参示例如下：
+	 * Parameter:targetLang
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Target Languages: Control what type of language the source language is converted to;
+	 *		Please note that similar to converting from English to French, Chinese must be used as the transition language, that is, English-Chinese-French, and direct conversion between languages excluding Chinese is not supported.
+	 *		Chinese: cn
+	 *		English: en
+	 *		Japanese: ja
+	 *		Korean: ko
+	 *		Russian: ru
+	 *		French:fr
+	 *		Spanish: es
+	 *		Vietnamese: vi
+	 *		Cantonese: cn_cantonese
+	 * Example:
+	 *		Such as：targetLang="en"
+	 *		If you use Chinese real-time translation to English parameter passing Example is as follows:
 	 *		"&lang=cn&transType=normal&transStrategy=2&targetLang=en"
-	 * 注意：需控制台开通翻译功能
+	 * Note: Translation function needs to be enabled on the iFlyTek control panel console.
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString targetLang = TEXT("en");
 
 	/**
-	 * 参数:punc
-	 * 类型:string
-	 * 必须:否
-	 * 说明:	标点过滤控制，默认返回标点，punc=0会过滤结果中的标点
-	 * 示例: 0
+	 * Parameter:punc
+	 * Type:string
+	 * Required:No
+	 * Description:	Punctuation filter control, punc is returned by default, punc=0 will filter punctuation in the results
+	 * Example: 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString punc = TEXT("None");
 
 	/**
-	 * 参数:pd
-	 * 类型:string
-	 * 必须:否
-	 * 说明:
-	 *		垂直领域个性化参数:
-	 *		法院: court
-	 *		教育: edu
-	 *		金融: finance
-	 *		医疗: medical
-	 *		科技: tech
-	 *		运营商: isp
-	 *		政府: gov
-	 *		电商: ecom
-	 *		军事: mil
-	 *		企业: com
-	 *		生活: life
-	 *		汽车: car
-	 * 示例:
-	 *		设置示例：pd="edu"
-	 *		参数pd为非必须设置，不设置参数默认为通用
+	 * Parameter:pd
+	 * Type:string
+	 * Required:No
+	 * Description:
+	 *		Vertical Personalization Parameters:
+	 *		Court: court
+	 *		Education: edu
+	 *		Finance: finance
+	 *		Medical: medical
+	 *		Technology: tech
+	 *		Operator: isp
+	 *		Government: gov
+	 *		E-Commerce: ecom
+	 *		Military: mil
+	 *		Enterprise: com
+	 *		Life: life
+	 *		Car: car
+	 * Example:
+	 *		Such as ：pd="edu"
+	 *		Parameter pd is optional. If no parameter is set, it is common by default
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString pd = TEXT("None");
 
 
 	/**
-	 * 参数:vadMdn
-	 * 类型:int
-	 * 必须:否
-	 * 说明:	远近场切换，不传此参数或传1代表远场，传2代表近场
-	 * 示例:	设置示例：vadMdn=2
+	 * Parameter:vadMdn
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *			Switch between far and near field, do not pass this parameter or pass 1 for the far field and pass 2 for the near field
+	 * Example:	Such as ：vadMdn=2
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 vadMdn = -1;
 
 	/**
-	 * 参数:roleType
-	 * 类型:int
-	 * 必须:否
-	 * 说明:	是否开角色分离，默认不开启，传2开启(效果持续优化中)
-	 * 示例:	设置示例：roleType=2
+	 * Parameter:roleType
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *			Whether to enable character separation, it is not enabled by default, and transmission 2 is enabled
+	 *			(the effect is continuously optimized)
+	 * Example:	Such as ：roleType=2
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 roleType = -1;
 
 	/**
-	 * 参数:engLangType
-	 * 类型:int
-	 * 必须:否
-	 * 说明:
-	 *		语言识别模式选，默认为模式1中英文模式：
-	 *		1：自动中英文模式
-	 *		2：中文模式，可能包含少量英文
-	 *		4：纯中文模式，不包含英文
-	 * 示例:	设置示例：engLangType=4
+	 * Parameter:engLangType
+	 * Type:int
+	 * Required:No
+	 * Description:
+	 *		Language recognition mode selection, default is mode 1 Chinese and English mode:
+	 *		1: Automatic Chinese and English mode
+	 *		2: Chinese mode, may include a small amount of English
+	 *		4: Pure Chinese mode, does not include English
+	 * Example:	Such as ：engLangType=4
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 engLangType = -1;

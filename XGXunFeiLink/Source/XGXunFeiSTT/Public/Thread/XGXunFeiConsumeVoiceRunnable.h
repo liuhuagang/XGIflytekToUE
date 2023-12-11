@@ -13,7 +13,8 @@ class UXGXunFeiRealTimeSTTSubsystem;
 class FXGXunFeiConsumeVoiceRunnable :public FRunnable
 {
 public:
-	FXGXunFeiConsumeVoiceRunnable(FString InThreadName, UXGXunFeiAudioCaptureSubsystem* InAudioCaptureSubsystem, UXGXunFeiRealTimeSTTSubsystem* InRealTimeSTTSubsystem);
+	FXGXunFeiConsumeVoiceRunnable(FString InThreadName,
+		TWeakObjectPtr<UXGXunFeiRealTimeSTTSubsystem> InRealTimeSTTSubsystem);
 	virtual ~FXGXunFeiConsumeVoiceRunnable();
 
 	virtual bool Init() override;
@@ -24,9 +25,11 @@ public:
 	FString ThreadName;
 protected:
 
+
+
 	FThreadSafeBool bIsRunning;
+	
 	FCriticalSection CriticalSection;
 
-	UXGXunFeiAudioCaptureSubsystem* AudioCaptureSubsystem;
-	UXGXunFeiRealTimeSTTSubsystem* RealTimeSTTSubsystem;
+	TWeakObjectPtr<UXGXunFeiRealTimeSTTSubsystem> RealTimeSTTSubsystem;
 };

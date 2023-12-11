@@ -10,8 +10,12 @@
 #include "XGXunFeiTTSAsyncAction.h"
 #include "XGXunFeiTTSReqType.h"
 
+
+
 #include "XGXunFeiLinkBPLibrary.generated.h"
 
+
+class USoundWave;
 /**
  * UXGXunFeiLinkBPLibrary
  * Exposed to users.
@@ -77,5 +81,9 @@ public:
 		FXGXunFeiTTSReqInfo InXunFeiTTSReqInfo,
 		FXGXunFeiTTSDelegate OnXunFeiTTSSuccess,
 		FXGXunFeiTTSDelegate OnXunFeiTTSFail);
+
+
+
+
 
 };

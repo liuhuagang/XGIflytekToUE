@@ -1,9 +1,12 @@
 // Copyright 2023 Xiao Gang. All Rights Reserved.
 #include "XGXunFeiAudioCaptureSubsystem.h"
 #include "Generators/AudioGenerator.h"
+#include "XGXunFeiRealTimeSTTSubsystem.h"
+
 
 UXGXunFeiAudioCaptureSubsystem* UXGXunFeiAudioCaptureSubsystem::XunFeiAudioCaptureSubsystemPtr = nullptr;
-
+TArray<float>  UXGXunFeiAudioCaptureSubsystem::VoiceData={};
+FCriticalSection UXGXunFeiAudioCaptureSubsystem::VoiceDataSection;
 bool UXGXunFeiAudioCaptureSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
 	return true;
@@ -16,14 +19,16 @@ void UXGXunFeiAudioCaptureSubsystem::Initialize(FSubsystemCollectionBase& Collec
 	XunFeiAudioCaptureSubsystemPtr = this;
 
 
-
 }
 
 void UXGXunFeiAudioCaptureSubsystem::Deinitialize()
 {
+	
 	StopCapturingAudio();
 	XunFeiAudioCaptureSubsystemPtr = nullptr;
 	Super::Deinitialize();
+
+
 }
 
 UXGXunFeiAudioCaptureSubsystem* UXGXunFeiAudioCaptureSubsystem::Get()
@@ -57,9 +62,10 @@ void UXGXunFeiAudioCaptureSubsystem::StopCapturingAudio()
 	{
 		XGAudioCapture->StopCapturingAudio();
 		XGAudioCapture->RemoveGeneratorDelegate(AudioGeneratorHandle);
-		ClearVoiceData();
 		XGAudioCapture = nullptr;
 	}
+
+	ClearVoiceData();
 
 }
 
@@ -69,6 +75,7 @@ bool UXGXunFeiAudioCaptureSubsystem::IsCapturingAudio()
 	{
 		return XGAudioCapture->IsCapturingAudio();
 	}
+
 	return false;
 
 
@@ -97,7 +104,9 @@ void UXGXunFeiAudioCaptureSubsystem::AppendVoiceData(const TArray<float>& InVoic
 bool UXGXunFeiAudioCaptureSubsystem::GetVoiceData(TArray<float>& OutVoiceData)
 {
 	FScopeLock Lock(&VoiceDataSection);
+	
 	OutVoiceData.Empty();
+
 	if (VoiceData.Num() > 1024)
 	{
 		OutVoiceData.Append(VoiceData.GetData(), 1024);
@@ -114,6 +123,7 @@ void UXGXunFeiAudioCaptureSubsystem::ClearVoiceData()
 	FScopeLock Lock(&VoiceDataSection);
 
 	VoiceData.Empty();
+
 }
 
 

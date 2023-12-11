@@ -46,10 +46,6 @@ public class XGXunFeiBase : ModuleRules
 
             AddEngineThirdPartyPrivateStaticDependencies(Target, "OpenSSL");
 
-            if (Target.Platform == UnrealTargetPlatform.Win64)
-            {
-                PublicSystemLibraries.Add("crypt32.lib");
-            }
         }
         else
         {
