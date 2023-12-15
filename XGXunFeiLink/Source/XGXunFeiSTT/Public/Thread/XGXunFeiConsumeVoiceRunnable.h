@@ -15,6 +15,7 @@ class FXGXunFeiConsumeVoiceRunnable :public FRunnable
 public:
 	FXGXunFeiConsumeVoiceRunnable(FString InThreadName,
 		TWeakObjectPtr<UXGXunFeiRealTimeSTTSubsystem> InRealTimeSTTSubsystem);
+
 	virtual ~FXGXunFeiConsumeVoiceRunnable();
 
 	virtual bool Init() override;
@@ -23,9 +24,8 @@ public:
 	virtual void Exit() override;
 
 	FString ThreadName;
+
 protected:
-
-
 
 	FThreadSafeBool bIsRunning;
 	

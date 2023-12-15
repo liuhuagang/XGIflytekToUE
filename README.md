@@ -16,7 +16,12 @@ The First  is the XGXunFeiLink plugin, which is commercial.You can purchase it t
 The Second is the XGKeDaXunFeiSoud plugin,which is just study demo code. Please do not use it in a formal situation.
 
 Demo Video URL:
-https://youtu.be/6NQ4PO2RpOU
+https://youtu.be/6NQ4PO2RpOU  
+
+UE Marketplace URL:
+https://www.unrealengine.com/marketplace/en-US/product/xgxunfeilink  
+
+
 
 
 ## XGXunFeiLink  

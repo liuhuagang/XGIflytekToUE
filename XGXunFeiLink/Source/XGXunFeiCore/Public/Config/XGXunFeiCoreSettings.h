@@ -29,31 +29,60 @@ public:
 
 public:
 
-	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "RealTime SpeechToText")
-	FString AppID_RealTimeSTT;
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "RealTime AutomatedSpeechRecognition Global")
+	FString App_ID_RealTimeASR_Global;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "RealTime AutomatedSpeechRecognition Global")
+	FString API_Secret_RealTimeASR_Global;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "RealTime AutomatedSpeechRecognition Global")
+	FString API_Key_RealTimeASR_Global;
+
+
+
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Online TextToSpeech Global")
+	FString App_ID_OnlineTTS_Global;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Online TextToSpeech Global")
+	FString API_Secret_OnlineTTS_Global;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Online TextToSpeech Global")
+	FString API_Key_OnlineTTS_Global;
+
+
+
+
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "RealTime SpeechToText")
-	FString APIKey_RealTimeSTT;
+	FString App_ID_RealTimeSTT;
+
+	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "RealTime SpeechToText")
+	FString API_Key_RealTimeSTT;
 
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "TextToSpeech Stream")
-	FString AppID_TTSStream;
+	FString App_ID_TTSStream;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "TextToSpeech Stream")
-	FString APIKey_TTSStream;
+	FString API_Secret_TTSStream;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "TextToSpeech Stream")
-	FString APISecret_TTSStream;
+	FString API_Key_TTSStream;
+
+
 
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Spark")
-	FString AppID_Spark;
+	FString App_ID_Spark;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Spark")
-	FString APIKey_Spark;
+	FString API_Secret_Spark;
 
 	UPROPERTY(Config, EditAnywhere, BlueprintReadWrite, Category = "Spark")
-	FString APISecret_Spark;
+	FString API_Key_Spark;
+
+
 
 
 

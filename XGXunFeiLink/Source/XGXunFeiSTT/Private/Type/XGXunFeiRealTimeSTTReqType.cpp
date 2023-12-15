@@ -12,9 +12,9 @@ FString FXGXunFeiRealTimeSTTReqInfo::GenerateRequireParams()
 {
 	FString RetStr=TEXT("");
 
-	FString AppID = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->AppID_RealTimeSTT;
-	FString APIKey = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->APIKey_RealTimeSTT;
-	FString TS = FString::FromInt(FDateTime::UtcNow().ToUnixTimestamp());
+	FString AppID = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->App_ID_RealTimeSTT;
+	FString APIKey = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->API_Key_RealTimeSTT;
+	FString TS = FString::FromInt(FDateTime::Now().UtcNow().ToUnixTimestamp());
 
 	appid = AppID;
 

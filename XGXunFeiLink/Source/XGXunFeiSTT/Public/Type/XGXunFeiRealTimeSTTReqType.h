@@ -2,8 +2,9 @@
 
 /**
  * Be careful:
- * This plugin only support China region.
- *
+ * This STT Module only support China region.
+ * If you want to use it in other regiion,you can use ASRG Module.
+ * 
  * iFlyTek Real Time Speech To Text Document:
  * Chinese:
  * https://www.xfyun.cn/doc/asr/rtasr/API.html

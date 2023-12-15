@@ -1,9 +1,9 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "1.0",
+	"VersionName": "2.1_Free",
 	"FriendlyName": "XGXunFeiLink",
-	"Description": "This plugin helps to connect XunFei(KeDaXunFei) to UnrealEngine 5.It contains Real-Time Speech To Text , Stream Text To Speech,and Spark",
+	"Description": "This plugin helps to connect XunFei(iFlyTek) to UnrealEngine 5.It contains Real-Time Automated Speech Recognition(Global) and Online Text To Speech(Global). It contains Real-Time Speech To Text , Stream Text To Speech,and Spark",
 	"Category": "XG",
 	"CreatedBy": "XiaoGang",
 	"CreatedByURL": "https://github.com/liuhuagang/XGIflytekToUE",
@@ -14,6 +14,7 @@
 	"CanContainContent": false,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": false,
+	"EnabledByDefault": false,
 	"Installed": false,
 	"Modules": [
 		{
@@ -21,15 +22,18 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PreDefault",
 			"PlatformAllowList": [
-				"Win64"
+				"Win64",
+				"Android"
 			]
+
 		},
 		{
 			"Name": "XGXunFeiCore",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"PlatformAllowList": [
-				"Win64"
+				"Win64",
+				"Android"
 			]
 		},
 		{
@@ -37,7 +41,8 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PostDefault",
 			"PlatformAllowList": [
-				"Win64"
+				"Win64",
+				"Android"
 			]
 		},
 		{
@@ -45,7 +50,8 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PostDefault",
 			"PlatformAllowList": [
-				"Win64"
+				"Win64",
+				"Android"
 			]
 		},
 		{
@@ -53,7 +59,8 @@
 			"Type": "Runtime",
 			"LoadingPhase": "PostEngineInit",
 			"PlatformAllowList": [
-				"Win64"
+				"Win64",
+				"Android"
 			]
 		}
 	],

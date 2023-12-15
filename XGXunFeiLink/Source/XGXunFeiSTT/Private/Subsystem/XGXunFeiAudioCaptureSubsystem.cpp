@@ -2,6 +2,7 @@
 #include "XGXunFeiAudioCaptureSubsystem.h"
 #include "Generators/AudioGenerator.h"
 #include "XGXunFeiRealTimeSTTSubsystem.h"
+#include <Kismet/KismetSystemLibrary.h>
 
 
 UXGXunFeiAudioCaptureSubsystem* UXGXunFeiAudioCaptureSubsystem::XunFeiAudioCaptureSubsystemPtr = nullptr;
@@ -42,16 +43,24 @@ void UXGXunFeiAudioCaptureSubsystem::StartCapturingAudio()
 	{
 		StopCapturingAudio();
 	}
-
 	XGAudioCapture = UAudioCaptureFunctionLibrary::CreateAudioCapture();
-	AudioGeneratorHandle = XGAudioCapture->AddGeneratorDelegate(&UXGXunFeiAudioCaptureSubsystem::OnAudioGenerate);
-
 	if (XGAudioCapture)
 	{
 		ClearVoiceData();
-
+		AudioGeneratorHandle = XGAudioCapture->AddGeneratorDelegate(&UXGXunFeiAudioCaptureSubsystem::OnAudioGenerate);
 		XGAudioCapture->StartCapturingAudio();
 	}
+	else
+	{
+		UKismetSystemLibrary::PrintString(this, TEXT("Failed AudioCapture,please check it"));
+
+		UE_LOG(LogTemp,Warning,TEXT("[%s]:No Audio Device Captured ,Please Check it!"));
+
+	}
+
+	
+
+
 
 
 }

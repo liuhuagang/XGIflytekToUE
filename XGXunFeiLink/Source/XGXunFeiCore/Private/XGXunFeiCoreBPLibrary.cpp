@@ -11,13 +11,13 @@
 FString UXGXunFeiCoreBPLibrary::XunFeiTTSHMACSHA256(const FString& InAPPSecreet, const FString& InData)
 {
 
-	uint8_t* secret = (uint8_t*)TCHAR_TO_UTF8(*InAPPSecreet);
-	uint8_t* indata = (uint8_t*)TCHAR_TO_UTF8(*InData);
+	//uint8_t* secret = (uint8_t*)TCHAR_TO_UTF8(*InAPPSecreet);
+	//uint8_t* indata = (uint8_t*)TCHAR_TO_UTF8(*InData);
 
-	int len1 = strlen((char*)secret);
-	int len2 = strlen((char*)indata);
+	int len1 = strlen((char*)TCHAR_TO_UTF8(*InAPPSecreet));
+	int len2 = strlen((char*)TCHAR_TO_UTF8(*InData));
 
-	FXGXunFeiBaseSHA256 XunFeiBaseSHA256 = FXGXunFeiBaseLibrary::HmacSha256(indata, len2, secret, len1);
+	FXGXunFeiBaseSHA256 XunFeiBaseSHA256 = FXGXunFeiBaseLibrary::HmacSha256((uint8_t*)TCHAR_TO_UTF8(*InData), len2, (uint8_t*)TCHAR_TO_UTF8(*InAPPSecreet), len1);
 
 	FString RetStr = TEXT("");
 

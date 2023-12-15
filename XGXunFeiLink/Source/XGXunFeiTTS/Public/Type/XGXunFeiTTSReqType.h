@@ -3,8 +3,8 @@
 /**
  * 
  * Be careful:
- * This plugin only support China region.
- * 
+ * This TTS Module only support China region.
+ * If you want to use it in other regiion,you can use TTSG Module.
  * iFlyTek Text To Speech Steam Document:
  * Chinese:
  * https://www.xfyun.cn/doc/tts/online_tts/API.html

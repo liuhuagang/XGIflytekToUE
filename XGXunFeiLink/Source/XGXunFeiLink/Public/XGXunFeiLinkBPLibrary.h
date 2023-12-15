@@ -11,8 +11,9 @@
 #include "XGXunFeiTTSReqType.h"
 
 
-
 #include "XGXunFeiLinkBPLibrary.generated.h"
+
+
 
 
 class USoundWave;
@@ -62,7 +63,7 @@ public:
 
 
 	/**
-	 *
+	 * XGXunFeiTextToSpeech
 	 *
 	 * @param WorldContextObject		WorldContext
 	 * @param InText					The Str you want to Convert to Audio

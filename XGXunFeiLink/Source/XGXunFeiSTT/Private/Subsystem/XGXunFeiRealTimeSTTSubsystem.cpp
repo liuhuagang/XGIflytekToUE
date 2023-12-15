@@ -129,6 +129,7 @@ void UXGXunFeiRealTimeSTTSubsystem::CallRealTimeSTTNoTranslateDelegate(FString I
 {
 
 	FXGXunFeiRealTimeSTTNoTranslateDelegate TempRealTimeSTTNoTranslateDelegate = RealTimeSTTNoTranslateDelegate;
+
 	AsyncTask(ENamedThreads::GameThread, [=]() {
 
 		TempRealTimeSTTNoTranslateDelegate.ExecuteIfBound(InSrcText);
@@ -196,11 +197,11 @@ void UXGXunFeiRealTimeSTTSubsystem::EndSendVoiceData()
 	{
 		FString EndStr = TEXT("{\"end\": true}");
 
-		const char* CharValue = TCHAR_TO_UTF8(*EndStr);
+		//const char* CharValue = TCHAR_TO_UTF8(*EndStr);
 
-		int32 Length = strlen(CharValue);
+		int32 Length = strlen(TCHAR_TO_UTF8(*EndStr));
 
-		Socket->Send(CharValue, Length, true);
+		Socket->Send(TCHAR_TO_UTF8(*EndStr), Length, true);
 		Socket->Close();
 		Socket.Reset();
 	}
@@ -222,13 +223,14 @@ void UXGXunFeiRealTimeSTTSubsystem::OnConnectionError(const FString& ErrorMessag
 
 	FString Message = FString(__FUNCTION__) + TEXT("-ConnectError,Message:") + ErrorMessage;
 
-	CallInitRealTimeSTTDelegate(false, Message);
-
 	XGStopRealTimeSpeechToText();
 
 	Socket.Reset();
 
 	ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Ready;
+
+
+	CallInitRealTimeSTTDelegate(false, Message);
 
 }
 
@@ -296,6 +298,11 @@ void UXGXunFeiRealTimeSTTSubsystem::OnMessage(const FString& Message)
 				return;
 			}
 
+			UE_LOG(LogXGXunFeiSTT, Display, TEXT("[%s]:Audio DeviceName:[%s],NumInputChannels:[%d],SampleRate:[%d]"),
+				*FString(__FUNCTION__),
+				*(AudioCaptureDeviceInfo.DeviceName.ToString()),
+				AudioCaptureDeviceInfo.NumInputChannels,
+				AudioCaptureDeviceInfo.SampleRate);
 
 
 			ConsumeVoiceRunnable = MakeShared<FXGXunFeiConsumeVoiceRunnable>(TEXT("XunFeiConsumeVoiceRunnable"), this);
@@ -303,7 +310,7 @@ void UXGXunFeiRealTimeSTTSubsystem::OnMessage(const FString& Message)
 
 			FString InitMessage = TEXT("XunFeiRealTimeSTT Init Success !");
 
-			CallInitRealTimeSTTDelegate(false, InitMessage);
+			CallInitRealTimeSTTDelegate(true, InitMessage);
 
 			UE_LOG(LogXGXunFeiSTT, Display, TEXT("[%s]:[%s]"), *FString(__FUNCTION__), *InitMessage);
 

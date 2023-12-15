@@ -131,9 +131,9 @@ void UXGXunFeiTTSAsyncAction::RealeaseResources()
 
 void UXGXunFeiTTSAsyncAction::CreateXunFeiTTSSocket()
 {
-	FString APPID = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->AppID_TTSStream;
-	FString APIKey = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->APIKey_TTSStream;
-	FString APISecret = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->APISecret_TTSStream;
+	FString APPID = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->App_ID_TTSStream;
+	FString APIKey = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->API_Key_TTSStream;
+	FString APISecret = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->API_Secret_TTSStream;
 
 	FString HttpDate = FDateTime::Now().UtcNow().ToHttpDate();
 
@@ -148,7 +148,7 @@ void UXGXunFeiTTSAsyncAction::CreateXunFeiTTSSocket()
 	FString	signature = UXGXunFeiCoreBPLibrary::XunFeiTTSHMACSHA256(APISecret, signature_origin);
 
 	FString authorization_origin =
-		FString::Printf(TEXT("api_key=\"%s\",algorithm=\"hmac-sha256\", headers=\"host date request-line\", signature=\"%s\""), *APIKey, *signature);
+		FString::Printf(TEXT("api_key=\"%s\", algorithm=\"hmac-sha256\", headers=\"host date request-line\", signature=\"%s\""), *APIKey, *signature);
 
 	FString authorization = FBase64::Encode(authorization_origin);
 
@@ -203,7 +203,7 @@ void UXGXunFeiTTSAsyncAction::OnConnected()
 	//UE_LOG(LogTemp,Error,TEXT("[%s]"), *Reulust);
 
 
-	XunFeiTTSReqInfo.common.app_id = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->AppID_TTSStream;
+	XunFeiTTSReqInfo.common.app_id = UXGXunFeiCoreSettings::GetXGXunFeiCoreSettings()->App_ID_TTSStream;
 	XunFeiTTSReqInfo.data.text = Base64XunFeiText;
 
 	XunFeiTTSReqInfo.business.speed = FMath::Clamp(XunFeiTTSReqInfo.business.speed, 0, 100);
