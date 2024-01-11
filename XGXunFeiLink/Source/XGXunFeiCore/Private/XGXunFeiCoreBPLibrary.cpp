@@ -4,20 +4,24 @@
 
 #include "Sound/SoundWaveProcedural.h"
 #include "Misc/Base64.h"
+#include "Misc/Paths.h"
+#include "Misc/FileHelper.h"
 
 #include "XGXunFeiBaseLibrary.h"
 #include "XGXunFeiCoreWaveType.h"
 
+
+
 FString UXGXunFeiCoreBPLibrary::XunFeiTTSHMACSHA256(const FString& InAPPSecreet, const FString& InData)
 {
 
-	uint8_t* secret = (uint8_t*)TCHAR_TO_UTF8(*InAPPSecreet);
-	uint8_t* indata = (uint8_t*)TCHAR_TO_UTF8(*InData);
+	//uint8_t* secret = (uint8_t*)TCHAR_TO_UTF8(*InAPPSecreet);
+	//uint8_t* indata = (uint8_t*)TCHAR_TO_UTF8(*InData);
 
-	int len1 = strlen((char*)secret);
-	int len2 = strlen((char*)indata);
+	int len1 = strlen((char*)TCHAR_TO_UTF8(*InAPPSecreet));
+	int len2 = strlen((char*)TCHAR_TO_UTF8(*InData));
 
-	FXGXunFeiBaseSHA256 XunFeiBaseSHA256 = FXGXunFeiBaseLibrary::HmacSha256(indata, len2, secret, len1);
+	FXGXunFeiBaseSHA256 XunFeiBaseSHA256 = FXGXunFeiBaseLibrary::HmacSha256((uint8_t*)TCHAR_TO_UTF8(*InData), len2, (uint8_t*)TCHAR_TO_UTF8(*InAPPSecreet), len1);
 
 	FString RetStr = TEXT("");
 
@@ -103,9 +107,22 @@ USoundWave* UXGXunFeiCoreBPLibrary::ImportPCMToSoundWave(const TArray<uint8>& In
 	NewSoundWave->Duration = (float)NumFrames / 16000.f;
 	NewSoundWave->SetSampleRate(16000);
 	NewSoundWave->NumChannels = 1;
-	NewSoundWave->bLooping=false;
+	NewSoundWave->bLooping = false;
 
 	NewSoundWave->SoundWaveDataPtr->InitializeDataFromSoundWave(*NewSoundWave);
 
 	return NewSoundWave;
+}
+
+bool UXGXunFeiCoreBPLibrary::LoadPitcureFileToBinaryData(const FString& InAbsoluteFilePath, TArray<uint8>& OutImgBinaryData)
+{
+	if (FPaths::FileExists(InAbsoluteFilePath))
+	{
+		OutImgBinaryData.Empty();
+		return  FFileHelper::LoadFileToArray(OutImgBinaryData, *InAbsoluteFilePath);
+	}
+
+
+
+	return false;
 }

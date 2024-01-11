@@ -36,8 +36,11 @@ public:
 protected:
 
 	void XGBeginRealTimeSpeechToText(
+		FString InSTTAppID,
+		FString InSTTAPIKey,
 		FXGXunFeiRealTimeSTTReqInfo& InRealTimeSTTReqInfo,
 		FXGXunFeiInitRealTimeSTTDelegate InInitRealTimeSTTDelegate,
+		FXGXunFeiRealTimeSTTNoTranslateMiddleDelegate InRealTimeSTTNoTranslateMiddleDelegate,
 		FXGXunFeiRealTimeSTTNoTranslateDelegate InRealTimeSTTNoTranslateDelegate,
 		FXGXunFeiRealTimeSTTTranslateDelegate InRealTimeSTTTranslateDelegate);
 	void XGStopRealTimeSpeechToText();
@@ -45,7 +48,10 @@ protected:
 
 	void CallInitRealTimeSTTDelegate(bool bInitResult,FString InitMessage);
 
+	void CallRealTimeSTTNoTranslateMiddleDelegate(FString InSrcText);
+
 	void CallRealTimeSTTNoTranslateDelegate(FString InSrcText);
+
 	void CallRealTimeSTTTranslateDelegate(FString InSrcText, FString InDstText);
 
 	void SendVoiceData(const TArray<float>& InVoiceData);
@@ -67,19 +73,30 @@ protected:
 
 protected:
 
+	FString STTAppID=TEXT("");
+
+	FString STTAPIKey=TEXT("");
 
 
 	EXGXunFeiRealTimeSTTStatus ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Ready;
 
 	FXGXunFeiInitRealTimeSTTDelegate InitRealTimeSTTDelegate;
 
-	FXGXunFeiRealTimeSTTTranslateDelegate RealTimeSTTTranslateDelegate;
+	FXGXunFeiRealTimeSTTNoTranslateMiddleDelegate RealTimeSTTNoTranslateMiddleDelegate;
 
 	FXGXunFeiRealTimeSTTNoTranslateDelegate RealTimeSTTNoTranslateDelegate;
+
+	FXGXunFeiRealTimeSTTTranslateDelegate RealTimeSTTTranslateDelegate;
+
+
+
+
 
 	TSharedPtr<IWebSocket> Socket;
 
 	FCriticalSection SocketCriticalSection;
 
 	TSharedPtr<FXGXunFeiConsumeVoiceRunnable> ConsumeVoiceRunnable;
+
+	FRunnableThread* RunnableThread;
 };

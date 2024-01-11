@@ -30,9 +30,8 @@ uint32 FXGXunFeiConsumeVoiceRunnable::Run()
 
 	while (true)
 	{
+
 		FPlatformProcess::Sleep(0.04);
-
-
 
 		TArray<float> VoiceData;
 

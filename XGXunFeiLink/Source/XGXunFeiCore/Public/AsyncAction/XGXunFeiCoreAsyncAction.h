@@ -16,9 +16,12 @@ public:
 
 	UXGXunFeiCoreAsyncAction(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	virtual void Activate() override final;
+	virtual void Activate() override ;
 
 
 	virtual void Activate_Internal() ;
 
+public:
+
+	FGuid AsyncID;
 };

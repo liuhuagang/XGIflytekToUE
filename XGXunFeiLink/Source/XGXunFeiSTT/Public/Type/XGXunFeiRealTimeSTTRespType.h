@@ -13,19 +13,19 @@ struct FXGXunFeiRealTImeSTTRespInfo
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString action;
+	FString action = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString code;
+	FString code = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString data;
+	FString data = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString desc;
+	FString desc = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString sid;
+	FString sid = TEXT("");
 };
 
 /**
@@ -42,41 +42,41 @@ struct FXGXunFeiRealTimeSTTTranslateData
 	 *
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString biz;
+	FString biz = TEXT("");
 
 	/**
 	 * Translated text results for the target language
 	 * Corresponds to the original text src
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString dst;
+	FString dst = TEXT("");
 	/**
 	 * End of translation mark
 	 * If true, the translation result has been pushed
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	bool isEnd;
+	bool isEnd =false;
 
 	/**
 	 * Transliteration result sequence number
 	 * Start at 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	int32 segId;
+	int32 segId = -1;
 
 	/**
 	 * Send translated original text
 	 * The audio corresponds to the identifying text
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString src;
+	FString src = TEXT("");
 
 	/**
 	 * Result Type identification
 	 * 0- Final result; 1- Intermediate result
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	int32 type;
+	int32 type = -1;
 
 
 	/**
@@ -84,7 +84,7 @@ struct FXGXunFeiRealTimeSTTTranslateData
 	 * The bg of the intermediate result is the exact value
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	int32 bg;
+	int32 bg=-1;
 
 
 	/**
@@ -92,7 +92,7 @@ struct FXGXunFeiRealTimeSTTTranslateData
 	 * The ed of the intermediate result is 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	int32 ed;
+	int32 ed=-1;
 
 };
 
@@ -108,14 +108,14 @@ struct FXGXunFeiRealTimeSTTNoTranslateCWData
 	 * Word recognition result
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString w;
+	FString w = TEXT("");
 
 	/**
 	 * Word recognition result
 	 * n- common words; S-smooth word (modal word); p-punctuation
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString wp;
+	FString wp = TEXT("");
 };
 
 /**
@@ -134,7 +134,7 @@ struct FXGXunFeiRealTimeSTTNoTranslateWSData
 	 * The wb of the intermediate result is 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	int32 wb;
+	int32 wb=-1;
 
 	/**
 	* The end time of the word in this sentence, in frames, 1 frame =10ms
@@ -142,7 +142,7 @@ struct FXGXunFeiRealTimeSTTNoTranslateWSData
 	* The we of the intermediate result is 0
 	*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	int32 we;
+	int32 we=-1;
 };
 
 
@@ -170,10 +170,10 @@ struct FXGXunFeiRealTimeSTTNoTranslateSTData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString bg;
+	FString bg = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString ed;
+	FString ed = TEXT("");
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	TArray<FXGXunFeiRealTimeSTTNoTranslateRTData> rt;
@@ -184,7 +184,7 @@ struct FXGXunFeiRealTimeSTTNoTranslateSTData
 	 *  0- Final result; 1- Intermediate result
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	FString type;
+	FString type = TEXT("");
 };
 
 
@@ -220,5 +220,5 @@ struct FXGXunFeiRealTimeSTTNoTranslateData
 	 * Start at 0
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
-	int32 seg_id;
+	int32 seg_id=-1;
 };

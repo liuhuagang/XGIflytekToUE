@@ -96,7 +96,7 @@ public:
 	 *
 	 */
 	UPROPERTY()
-	FString sid;
+	FString sid = TEXT("");
 
 
 

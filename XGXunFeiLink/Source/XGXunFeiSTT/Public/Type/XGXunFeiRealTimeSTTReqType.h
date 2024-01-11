@@ -2,8 +2,9 @@
 
 /**
  * Be careful:
- * This plugin only support China region.
- *
+ * This STT Module only support China region.
+ * If you want to use it in other regiion,you can use ASRG Module.
+ * 
  * iFlyTek Real Time Speech To Text Document:
  * Chinese:
  * https://www.xfyun.cn/doc/asr/rtasr/API.html
@@ -37,7 +38,7 @@ protected:
 	 * Example:5f9c6d6a
 	 */
 	UPROPERTY()
-	FString appid;
+	FString appid = TEXT("");
 
 	/**
 	 * Parameter:ts
@@ -47,7 +48,7 @@ protected:
 	 * Example:1512041814
 	 */
 	UPROPERTY()
-	FString ts;
+	FString ts = TEXT("");
 
 	/**
 	 * Parameter:signa
@@ -57,7 +58,7 @@ protected:
 	 * Example:IrrzsJeOFk1NGfJHW6SkHUoN9CU=
 	 */
 	UPROPERTY()
-	FString signa;
+	FString signa = TEXT("");
 
 public:
 
@@ -214,7 +215,7 @@ public:
 
 public:
 
-	FString GenerateRequireParams();
+	FString GenerateRequireParams(FString InAppID,FString InAPIKey);
 
 protected:
 

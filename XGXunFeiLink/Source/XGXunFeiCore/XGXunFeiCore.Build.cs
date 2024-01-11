@@ -40,7 +40,8 @@ public class XGXunFeiCore : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "DeveloperSettings",
-                "XGXunFeiBase"
+                "XGXunFeiBase",
+                "Projects"
             }
             );
     }

@@ -4,8 +4,11 @@
 #include "Async/Async.h"
 #include "Async/TaskGraphInterfaces.h"
 UXGXunFeiCoreAsyncAction::UXGXunFeiCoreAsyncAction(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
+	:Super(ObjectInitializer),
+	AsyncID(FGuid::NewGuid())
 {
+
+
 }
 
 void UXGXunFeiCoreAsyncAction::Activate()

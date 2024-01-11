@@ -26,7 +26,7 @@ public:
 
 	static USoundWave* ImportPCMToSoundWave(const TArray<uint8>& InPCMData);
 
-
+	static bool LoadPitcureFileToBinaryData(const FString& InAbsoluteFilePath,TArray<uint8>& OutImgBinaryData);
 
 
 };

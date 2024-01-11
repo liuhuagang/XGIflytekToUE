@@ -7,7 +7,10 @@
 
 DECLARE_DYNAMIC_DELEGATE_TwoParams(FXGXunFeiInitRealTimeSTTDelegate, bool, bInitResult, FString,InitRespMessage);
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FXGXunFeiRealTimeSTTNoTranslateMiddleDelegate, FString, OutMiddleSrcText);
+
 DECLARE_DYNAMIC_DELEGATE_OneParam(FXGXunFeiRealTimeSTTNoTranslateDelegate, FString, OutSrcText);
+
 DECLARE_DYNAMIC_DELEGATE_TwoParams(FXGXunFeiRealTimeSTTTranslateDelegate, FString, OutSrcText, FString, OutDstText);
 
 
