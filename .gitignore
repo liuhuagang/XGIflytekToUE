@@ -1,8 +1,9 @@
 # UE5
 Binaries/
 Intermediate/
-
-
+Saved/
+DerivedDataCache/
+Build/
 # Prerequisites
 *.d
 
