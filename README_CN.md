@@ -1,22 +1,23 @@
 # XGXunFeiLink  
-Plugin Version:3.6
+Plugin Version:4.1
 ## 简介
-连接虚幻引擎5和科大讯飞的WebAPI的引擎插件  
-英文文档:
-[English Instruction](./README.md)  
-中文文档:
-[Chinese Instruction](./Instruction_cn.md)
-开发日志视频(中文):
-[虚幻科大讯飞插件开发实战](https://www.bilibili.com/video/BV13W4y1w7MV/)
-油管视频(英文):
-[PluginVersion-2.4](https://youtu.be/6NQ4PO2RpOU)
-商城链接:
-[XGXunFeiLink购买链接](https://www.unrealengine.com/marketplace/en-US/product/xgxunfeilink)  
-注意:
-1.你需要自行去科大讯飞官网进行注册应用信息,获取AppID,APISecret,APIKey等,大部分功能均可免费试用,部分功能可以长期试用.  
-科大讯飞官网分为中文站和全球站,两套网站的信息功能不互通.只有全球站的功能才支持全球调用.
-[IFlyTekWebUrl-en](https://global.xfyun.cn/)
-[IFlyTekWebUrl-cn](https://www.xfyun.cn/)   
+连接虚幻引擎5和科大讯飞的WebAPI的引擎插件</br>
+英文文档:</br>
+[English Instruction](./README.md)</br>
+中文文档:</br>
+[Chinese Instruction](./README_CN.md)</br>
+开发日志视频(中文):</br>
+[虚幻科大讯飞插件开发实战](https://www.bilibili.com/video/BV13W4y1w7MV/)</br>
+油管视频(英文):</br>
+[PluginVersion-2.4](https://youtu.be/6NQ4PO2RpOU)</br>
+商城链接:</br>
+[XGXunFeiLink购买链接](https://www.unrealengine.com/marketplace/en-US/product/xgxunfeilink) </br> 
+注意:</br>
+1.你需要自行去科大讯飞官网进行注册应用信息,获取AppID,APISecret,APIKey等,大部分功能均可免费试用,部分功能可以长期试用.</br>
+科大讯飞官网分为中文站和全球站,两套网站的信息功能不互通.</br>
+只有全球站的功能才支持全球调用.</br>
+[IFlyTekWebUrl-en](https://global.xfyun.cn/)</br>
+[IFlyTekWebUrl-cn](https://www.xfyun.cn/)   </br>
 2.本插件并非由官方人员开发,也不包含任何来自科大讯飞的代码,图片等,也不会存储你的应用信息等,功能仅由虚幻引擎的提供代码进行实现通讯交互.
 ## 代码库介绍
 ### 文件夹 DocumentPictures:  

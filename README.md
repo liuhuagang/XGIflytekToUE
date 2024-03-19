@@ -1,5 +1,5 @@
 # XGXunFeiLink  
-Version:3.6
+Plugin Version:4.1
 ## Brief  
 
 This is XGXunFeiLink project,which it helps to connect iFlyTek with  UnrealEngine 5.  
@@ -31,7 +31,7 @@ UE Marketplace URL:
 [XGXunFeiLink](https://www.unrealengine.com/marketplace/en-US/product/xgxunfeilink)  
 
 Chinese Instruction URL:
-[中文说明书](./Instruction_cn.md)  
+[中文说明书](./README_CN.md)  
 
 iFlyTek Global Web URL:  
 
