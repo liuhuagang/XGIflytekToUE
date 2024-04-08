@@ -6,11 +6,16 @@
 #include "Misc/Base64.h"
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
+#include "Runtime/Launch/Resources/Version.h"
+#include "UObject/Package.h"
+#include "UObject/ObjectMacros.h"
+#include "Memory/SharedBuffer.h"
+
+
+
 
 #include "XGXunFeiBaseLibrary.h"
 #include "XGXunFeiCoreWaveType.h"
-
-
 
 FString UXGXunFeiCoreBPLibrary::XunFeiTTSHMACSHA256(const FString& InAPPSecreet, const FString& InData)
 {
@@ -75,43 +80,46 @@ void UXGXunFeiCoreBPLibrary::ConvertPCMToWave(const TArray<uint8>& InPCMData, TA
 
 USoundWave* UXGXunFeiCoreBPLibrary::ImportPCMToSoundWave(const TArray<uint8>& InPCMData)
 {
-	//TODO ModifyAPi to Stream~~
-	//if (false)
-	//{
-	//	USoundWaveProcedural* SoundWave = NewObject<USoundWaveProcedural>(USoundWaveProcedural::StaticClass());
+	const int32 ChannelCount = 1;
 
-	//	SoundWave->SetSampleRate(16000);
-	//	SoundWave->SetImportedSampleRate(16000);
-	//	SoundWave->NumChannels = 1;
-	//	SoundWave->SampleByteSize = 16;
-	//	SoundWave->bLooping = false;
-	//	SoundWave->bCanProcessAsync = true;
-	//	SoundWave->Duration = INDEFINITELY_LOOPING_DURATION;
-	//	SoundWave->QueueAudio(InPCMData.GetData(), InPCMData.Num());
-	//}
+	const int32 SizeOfSample = 16 / 8;
+	const int32 NumSamples = InPCMData.Num() / SizeOfSample;
 
-	USoundWave* NewSoundWave = NewObject<USoundWave>();
+	const int32 NumFrames = NumSamples / ChannelCount;
 
-	uint8* RawData = nullptr;
+	const int32 SampleDataSize = InPCMData.Num();
 
-	RawData = (uint8*)FMemory::Malloc(InPCMData.Num());
-	FMemory::Memcpy(RawData, InPCMData.GetData(), InPCMData.Num());
+	FString SoundWaveName = TEXT("XGSoundWave:") + FGuid::NewGuid().ToString();
 
-	int32 NumBytes = 0;
-	int32 NumFrames = InPCMData.Num() / 2;
+	USoundWave* SoundWave = NewObject < USoundWave>(GetTransientPackage(), *SoundWaveName, RF_Public | RF_Standalone);
 
-	NumBytes = NumFrames * sizeof(int16);
 
-	NewSoundWave->RawPCMDataSize = NumBytes;
-	NewSoundWave->RawPCMData = RawData;
-	NewSoundWave->Duration = (float)NumFrames / 16000.f;
-	NewSoundWave->SetSampleRate(16000);
-	NewSoundWave->NumChannels = 1;
-	NewSoundWave->bLooping = false;
 
-	NewSoundWave->SoundWaveDataPtr->InitializeDataFromSoundWave(*NewSoundWave);
+#if WITH_EDITOR&& ENGINE_MINOR_VERSION > 0
 
-	return NewSoundWave;
+	TArray<uint8> WavData;
+	ConvertPCMToWave(InPCMData, WavData);
+
+	SoundWave->RawData.UpdatePayload(FSharedBuffer::Clone(WavData.GetData(), WavData.Num()));
+#endif  
+
+
+	SoundWave->RawPCMData = (uint8*)FMemory::Malloc(SampleDataSize);
+
+	FMemory::Memcpy(SoundWave->RawPCMData, InPCMData.GetData(), SampleDataSize);
+
+	SoundWave->RawPCMDataSize = SampleDataSize;
+
+	// Set Sound Wave Info
+	SoundWave->Duration = (float)NumFrames / 16000.f;
+	SoundWave->SetSampleRate(16000.f);
+	SoundWave->NumChannels = ChannelCount;
+	SoundWave->TotalSamples = NumFrames;
+
+
+
+
+	return SoundWave;
 }
 
 bool UXGXunFeiCoreBPLibrary::LoadPitcureFileToBinaryData(const FString& InAbsoluteFilePath, TArray<uint8>& OutImgBinaryData)

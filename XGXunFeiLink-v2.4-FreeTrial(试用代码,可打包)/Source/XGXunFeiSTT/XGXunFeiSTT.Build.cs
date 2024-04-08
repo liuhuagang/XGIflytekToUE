@@ -50,11 +50,15 @@ public class XGXunFeiSTT : ModuleRules
             );
 
 
-        DynamicallyLoadedModuleNames.AddRange(
-            new string[]
-            {
-
-            }
+        if (Target.Platform == UnrealTargetPlatform.Android)
+        {
+            PrivateDependencyModuleNames.AddRange(
+                new string[]
+                {
+                        "Launch",
+                }
             );
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 // Copyright 2023 Xiao Gang. All Rights Reserved.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class XGXunFeiCore : ModuleRules
@@ -44,5 +45,15 @@ public class XGXunFeiCore : ModuleRules
                 "Projects"
             }
             );
+
+        if (Target.Platform == UnrealTargetPlatform.Android)
+        {
+            PrivateDependencyModuleNames.AddRange(
+                new string[]
+                {
+                        "Launch",
+                }
+            );
+        }
     }
 }
