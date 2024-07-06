@@ -14,29 +14,40 @@ void UXGXunFeiLinkBPLibrary::XGXunFeiBeginRealTimeSpeechToText(const UObject* Wo
 	FString InSTTAppID,
 	FString InSTTAPIKey,
 	FXGXunFeiRealTimeSTTReqInfo InRealTimeSTTReqInfo,
-	FXGXunFeiInitRealTimeSTTDelegate InInitRealTimeSTTDelegate,
-	FXGXunFeiRealTimeSTTNoTranslateMiddleDelegate InRealTimeSTTNoTranslateMiddleDelegate,
-	FXGXunFeiRealTimeSTTNoTranslateDelegate InRealTimeSTTNoTranslateDelegate,
-	FXGXunFeiRealTimeSTTTranslateDelegate InRealTimeSTTTranslateDelegate)
+	FXGXunFeiInitRealTimeSTTDelegate InRealTimeSTTInitDelegate,
+	FXGXunFeiRealTimeSTTRespDelegate InRealTimeSTTRespDelegate,
+	FXGXunFeiRealTimeSTTCloseDelegate InRealTimeSTTCloseDelegate,
+	FGuid& OutSTTAsyncID)
 {
 	if (WorldContextObject && WorldContextObject->GetWorld())
 	{
 		UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
 		UXGXunFeiRealTimeSTTSubsystem* RealTimeSTTSubsystem = GameInstance->GetSubsystem<UXGXunFeiRealTimeSTTSubsystem>();
-		RealTimeSTTSubsystem->XGBeginRealTimeSpeechToText(
+
+		OutSTTAsyncID = RealTimeSTTSubsystem->XGBeginRealTimeSpeechToText(
 			InSTTAppID,
 			InSTTAPIKey,
 			InRealTimeSTTReqInfo,
-			InInitRealTimeSTTDelegate,
-			InRealTimeSTTNoTranslateMiddleDelegate,
-			InRealTimeSTTNoTranslateDelegate,
-			InRealTimeSTTTranslateDelegate);
+			InRealTimeSTTInitDelegate,
+			InRealTimeSTTRespDelegate,
+			InRealTimeSTTCloseDelegate);
 
 	}
 	else
 	{
-		InInitRealTimeSTTDelegate.ExecuteIfBound(false, TEXT("WorldContextObject is null"));
+		OutSTTAsyncID = FGuid::NewGuid();
+
+		AsyncTask(ENamedThreads::GameThread, [InRealTimeSTTInitDelegate, OutSTTAsyncID]() {
+
+			InRealTimeSTTInitDelegate.ExecuteIfBound(OutSTTAsyncID, false, TEXT("WorldContextObject is null"), FXGXunFeiRealTimeSTTInitInformation());
+
+			});
+
+
+
 	}
+
+
 }
 
 void UXGXunFeiLinkBPLibrary::XGXunFeiStopRealTimeSpeechToText(const UObject* WorldContextObject)

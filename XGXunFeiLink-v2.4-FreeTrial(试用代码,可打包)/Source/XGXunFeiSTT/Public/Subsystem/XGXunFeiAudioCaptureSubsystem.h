@@ -6,6 +6,15 @@
 #include "AudioCapture.h"
 #include "XGXunFeiAudioCaptureSubsystem.generated.h"
 
+
+enum class EXGXunFeiAudioCaptureType
+{
+	None,
+	RealtimeSTT,
+	VoiceDictation_8k,
+	VoiceDictation_16k,
+};
+
 /**
  *	UXGXunFeiAudioCaptureSubsystem
  *	Audio capture from deivce.
@@ -13,12 +22,14 @@
  */
  struct FAudioGeneratorHandle;
 UCLASS()
-class UXGXunFeiAudioCaptureSubsystem : public UGameInstanceSubsystem
+class XGXUNFEISTT_API UXGXunFeiAudioCaptureSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
 	friend class FXGXunFeiConsumeVoiceRunnable;
 	friend class UXGXunFeiRealTimeSTTSubsystem;
+	friend class UXGXunFeiVoiceDictationSubsystem;
+	friend class UXGXunFeiLinkBPLibrary;
 
 public:
 
@@ -32,7 +43,7 @@ protected:
 	
 	static UXGXunFeiAudioCaptureSubsystem* Get();
 
-	void StartCapturingAudio();
+	void StartCapturingAudio(EXGXunFeiAudioCaptureType InAuidoCaptureType= EXGXunFeiAudioCaptureType::RealtimeSTT);
 
 	void StopCapturingAudio();
 
@@ -40,9 +51,11 @@ protected:
 
 	bool GetAudioCaptureDeviceInfo(FAudioCaptureDeviceInfo& OutInfo);
 
+	float GetVolumeSize();
 
+	void  SetVolumeSize(float InVolumeSize);
 
-	static void AppendVoiceData(const TArray<float>& InVoiceData);
+	static void AppendVoiceData(const float* InAudio, int32 NumSamples);
 
 	static bool GetVoiceData(TArray<float>& OutVoiceData);
 
@@ -50,10 +63,21 @@ protected:
 
 	static void OnAudioGenerate(const float* InAudio, int32 NumSamples);
 
+	static TArray<float> LinearResample(TArray<float>& InData,int32 OutDataSize);
 
 protected:
 
+	static FAudioCaptureDeviceInfo AudioCaptureDeviceInfo;
+
 	static UXGXunFeiAudioCaptureSubsystem* XunFeiAudioCaptureSubsystemPtr;
+
+	static int32 AudioCaptureSampleRate;
+
+	static int32 OnceSendFloatDataNum;
+
+	static int32 AudioCaptureCoefficient;
+
+	float VolumeSize =0.f;
 
 	UPROPERTY()
 	UAudioCapture* XGAudioCapture;
@@ -62,7 +86,7 @@ protected:
 
 	static FCriticalSection VoiceDataSection;
 
-	static TArray<float> VoiceData;
+	static TArray<float> NewAllVoiceData;
 
 
 };

@@ -39,36 +39,36 @@ public:
 
 	/**
 	 * XunFeiBeginRealTimeSpeechToText
-	 *
+	 * If your app ID supports to translage and you open it in this plugin.More to look XunFeiDoc.
 	 * @param WorldContextObject						WorldContext
+
+	 * @param InSTTAppID								iFlyTek AppID
+	 * @param InSTTAPIKey								iFlyTek APIKey
+	 *
 	 * @param InRealTimeSTTReqInfo						RealTimeSpeechToTextSettings,you can do nothing to keep default.
 	 *													Default lanaguge is Chinese,you can change to Chinese to Enginsh,such as "cn"->"en". Default No Translate,just Src.if you need to translate,you need to open it function in XunFei web.
 	 *
-	 * @param InSTTAppID								iFlyTek AppID
-	 * @param InSTTAPIKey								iFlyTek APIKey
-	 * 
 	 * @param InInitRealTimeSTTDelegate					Tell you whether to success to create socket to XunFei and begin to audio capture.
 	 *													if your app key and id are not right,you will fail.if your audio input device is not good,you will fail.
 	 *													Suggest audio input [48000 kHz,16 bits, 2 channle][48000 kHz,16 bits, 1 channle][16000 kHz,16 bits, 1 channle],thest can work well.
 	 *
-	 * @param InRealTimeSTTNoTranslateMiddleDelegate	Give you the middle Src Speech to Text .
-	 * @param InRealTimeSTTNoTranslateDelegate			Give you Src Speech to Text .
-	 * @param InRealTimeSTTTranslateDelegate			Give you Src Speech to Text Src and Target Translate Text.
+	 * @param InRealTimeSTTRespDelegate					Give you the response info
+	 * @param InRealTimeSTTCloseDelegate				If it stops normally,It will call you.If you force to stop,there will be no callback.
 	 *
-	 * If your app ID supports to translage and you open it in this plugin.More to look XunFeiDoc.
+	 * @param OutSTTAsyncID								The STTAsyncID
 	 *
 	 *
 	 */
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "XunFeiBeginRealTimeSpeechToText", WorldContext = "WorldContextObject",
-		Keywords = "XG XunFei STT SPeech To Text "), Category = "XGXunFeiLink|STT")
+		Keywords = "XG XunFei STT Soeech To Text RealTime Begin"), Category = "XGXunFeiLink|STT|RealTimeSTT")
 	static void XGXunFeiBeginRealTimeSpeechToText(const UObject* WorldContextObject,
 		FString InSTTAppID,
 		FString InSTTAPIKey,
 		FXGXunFeiRealTimeSTTReqInfo InRealTimeSTTReqInfo,
-		FXGXunFeiInitRealTimeSTTDelegate InInitRealTimeSTTDelegate,
-		FXGXunFeiRealTimeSTTNoTranslateMiddleDelegate InRealTimeSTTNoTranslateMiddleDelegate,
-		FXGXunFeiRealTimeSTTNoTranslateDelegate InRealTimeSTTNoTranslateDelegate,
-		FXGXunFeiRealTimeSTTTranslateDelegate InRealTimeSTTTranslateDelegate);
+		FXGXunFeiInitRealTimeSTTDelegate InRealTimeSTTInitDelegate,
+		FXGXunFeiRealTimeSTTRespDelegate InRealTimeSTTRespDelegate,
+		FXGXunFeiRealTimeSTTCloseDelegate InRealTimeSTTCloseDelegate,
+		FGuid& OutSTTAsyncID);
 
 
 	/**

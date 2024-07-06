@@ -8,7 +8,7 @@
  * FXGXunFeiRealTImeSTTRespInfo
  */
 USTRUCT(BlueprintType)
-struct FXGXunFeiRealTImeSTTRespInfo
+struct XGXUNFEISTT_API FXGXunFeiRealTImeSTTRespInfo
 {
 	GENERATED_BODY()
 
@@ -32,7 +32,7 @@ struct FXGXunFeiRealTImeSTTRespInfo
  * FXGXunFeiRealTimeSTTTranslateData
  */
 USTRUCT(BlueprintType)
-struct FXGXunFeiRealTimeSTTTranslateData
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTTranslateData
 {
 	GENERATED_BODY()
 
@@ -100,9 +100,16 @@ struct FXGXunFeiRealTimeSTTTranslateData
  * FXGXunFeiRealTimeSTTNoTranslateCWData
  */
 USTRUCT(BlueprintType)
-struct FXGXunFeiRealTimeSTTNoTranslateCWData
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTNoTranslateCWData
 {
 	GENERATED_BODY()
+
+	/**
+	 * Unknown Parameter
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	float sc = 0.0f;
+
 
 	/**
 	 * Word recognition result
@@ -116,13 +123,48 @@ struct FXGXunFeiRealTimeSTTNoTranslateCWData
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	FString wp = TEXT("");
+
+
+	/**
+	 * 1. The separated role number can be returned only after the role separation function is enabled.
+	 * 2. The role number starts from 1.
+	 * 3. This field appears only when the role separation function is enabled.
+	 * This value changes only when roles are switched.
+	 * The rest of the value is 0. For example, when role A starts to speak rl=1, then when role A speaks rl is always 0. When Role B starts to speak, rl=2, and Role B continues to speak rl changes back to 0.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString rl = TEXT("");
+
+	/**
+	 * The start time of the word in this sentence, in frames, 1 frame =10ms
+	 * The start time of the word in the whole speech is (bg+wb*10)ms
+	 * The wb of the intermediate result is 0
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	int32 wb = -1;
+
+	/**
+	 * Unknown Parameter
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	float wc = 0.0f;
+
+	/**
+	* The end time of the word in this sentence, in frames, 1 frame =10ms
+	* The end time of the word in the whole speech is (bg+we*10)ms
+	* The we of the intermediate result is 0
+	*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	int32 we = -1;
+
+
 };
 
 /**
  * FXGXunFeiRealTimeSTTNoTranslateWSData
  */
 USTRUCT(BlueprintType)
-struct FXGXunFeiRealTimeSTTNoTranslateWSData
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTNoTranslateWSData
 {
 	GENERATED_BODY()
 
@@ -150,7 +192,7 @@ struct FXGXunFeiRealTimeSTTNoTranslateWSData
  * FXGXunFeiRealTimeSTTNoTranslateRTData
  */
 USTRUCT(BlueprintType)
-struct FXGXunFeiRealTimeSTTNoTranslateRTData
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTNoTranslateRTData
 {
 	GENERATED_BODY()
 
@@ -165,7 +207,7 @@ struct FXGXunFeiRealTimeSTTNoTranslateRTData
  * FXGXunFeiRealTimeSTTNoTranslateSTData
  */
 USTRUCT(BlueprintType)
-struct FXGXunFeiRealTimeSTTNoTranslateSTData
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTNoTranslateSTData
 {
 	GENERATED_BODY()
 
@@ -192,7 +234,7 @@ struct FXGXunFeiRealTimeSTTNoTranslateSTData
  * FXGXunFeiRealTimeSTTNoTranslateCNData
  */
 USTRUCT(BlueprintType)
-struct FXGXunFeiRealTimeSTTNoTranslateCNData
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTNoTranslateCNData
 {
 	GENERATED_BODY()
 
@@ -204,7 +246,7 @@ struct FXGXunFeiRealTimeSTTNoTranslateCNData
  * FXGXunFeiRealTimeSTTNoTranslateData
  */
 USTRUCT(BlueprintType)
-struct FXGXunFeiRealTimeSTTNoTranslateData
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTNoTranslateData
 {
 	GENERATED_BODY()
 
@@ -221,4 +263,89 @@ struct FXGXunFeiRealTimeSTTNoTranslateData
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
 	int32 seg_id=-1;
+
+	/**
+	 * Unknown Parameter
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	bool ls =false;
+};
+
+
+
+
+USTRUCT(BlueprintType)
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTInitInformation
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FXGXunFeiRealTImeSTTRespInfo RealTImeSTTInitInfo;
+
+};
+
+
+
+
+
+USTRUCT(BlueprintType)
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTRawInformation
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FXGXunFeiRealTImeSTTRespInfo RealTImeSTTRespInfo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FXGXunFeiRealTimeSTTNoTranslateData  RealTimeSTTNoTranslateData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FXGXunFeiRealTimeSTTTranslateData  RealTimeSTTTranslateData;
+
+
+};
+
+
+UENUM(BlueprintType)
+enum class EXGXunFeiRealTimeSTTRespType : uint8
+{
+	MiddleTextOnlySrc UMETA(DisplayName = "MiddleTextOnlySrc"),
+	FinalTextOnlySrc UMETA(DisplayName = "FinalTextOnlySrc"),
+	FinalTextWithSrcAndDst UMETA(DisplayName = "FinalTextWithSrcAndDst"),
+};
+
+
+
+USTRUCT(BlueprintType)
+struct XGXUNFEISTT_API FXGXunFeiRealTimeSTTInformation
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FGuid AsyncSTTID = FGuid();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	bool bSuccess = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	EXGXunFeiRealTimeSTTRespType RespType = EXGXunFeiRealTimeSTTRespType::MiddleTextOnlySrc;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString SrcText = TEXT("");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString DstText = TEXT("");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FString RoleType =TEXT("0");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "XG XunFei RealTime STT")
+	FXGXunFeiRealTimeSTTRawInformation RawInformation;
+
 };

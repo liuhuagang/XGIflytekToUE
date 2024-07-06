@@ -10,12 +10,15 @@
 #include "XGXunFeiRealTimeSTTSubsystem.generated.h"
 
 
-
-class FXGXunFeiConsumeVoiceRunnable;
 class IWebSocket;
+class FXGXunFeiConsumeVoiceRunnable;
+class UXGXunFeiLinkBPLibrary;
+class UXGXunFeiAudioCaptureSubsystem;
+class UXGXunFeiVoiceDictationSubsystem;
+
 /**
  * UXGXunFeiRealTimeSTTSubsystem
- * Connect iFlyTek RealTime SST Web Api through WebSocket.
+ * Connect iFlyTek RealTime SST WebAPI through WebSocket.
  */
 UCLASS()
 class  XGXUNFEISTT_API UXGXunFeiRealTimeSTTSubsystem : public UGameInstanceSubsystem
@@ -25,6 +28,7 @@ class  XGXUNFEISTT_API UXGXunFeiRealTimeSTTSubsystem : public UGameInstanceSubsy
 	friend class FXGXunFeiConsumeVoiceRunnable;
 	friend class UXGXunFeiLinkBPLibrary;
 	friend class UXGXunFeiAudioCaptureSubsystem;
+	friend class UXGXunFeiVoiceDictationSubsystem;
 
 public:
 
@@ -35,68 +39,78 @@ public:
 
 protected:
 
-	void XGBeginRealTimeSpeechToText(
+	bool IsRealTimeSTTReady();
+
+	FGuid XGBeginRealTimeSpeechToText(
 		FString InSTTAppID,
 		FString InSTTAPIKey,
 		FXGXunFeiRealTimeSTTReqInfo& InRealTimeSTTReqInfo,
-		FXGXunFeiInitRealTimeSTTDelegate InInitRealTimeSTTDelegate,
-		FXGXunFeiRealTimeSTTNoTranslateMiddleDelegate InRealTimeSTTNoTranslateMiddleDelegate,
-		FXGXunFeiRealTimeSTTNoTranslateDelegate InRealTimeSTTNoTranslateDelegate,
-		FXGXunFeiRealTimeSTTTranslateDelegate InRealTimeSTTTranslateDelegate);
+		FXGXunFeiInitRealTimeSTTDelegate InRealTimeSTTInitDelegate,
+		FXGXunFeiRealTimeSTTRespDelegate InRealTimeSTTRespDelegate,
+		FXGXunFeiRealTimeSTTCloseDelegate InRealTimeSTTCloseDelegate);
+
 	void XGStopRealTimeSpeechToText();
 
+	void XGForceToStopRealTimeSPeechToText(bool IsDeinitialize=false);
 
-	void CallInitRealTimeSTTDelegate(bool bInitResult,FString InitMessage);
+	void CallInitRealTimeSTTDelegate(FGuid InSTTAsyncID, bool bInInitResult, FString InInitRespMessage, FXGXunFeiRealTimeSTTInitInformation InRealTimeSTTInitInformation);
 
-	void CallRealTimeSTTNoTranslateMiddleDelegate(FString InSrcText);
+	void CallRealTimeSTTRespDelegate( FXGXunFeiRealTimeSTTInformation  InRealTimeSTTInformation);
 
-	void CallRealTimeSTTNoTranslateDelegate(FString InSrcText);
-
-	void CallRealTimeSTTTranslateDelegate(FString InSrcText, FString InDstText);
+	void CallRealTimeSTTCloseDelegate(FGuid InSTTAsyncID, int32 InStatusCode, FString InReason,bool bInWasClean);
 
 	void SendVoiceData(const TArray<float>& InVoiceData);
 
+	void RealseaseVoiceGenerateRunnale();
+
 	void RealeaseVoiceConsumeRunnable();
 
+	void RealeaseWebSocket();
+
+	void RealeaseSTTInfo();
+
 	void EndSendVoiceData();
+
+
 
 
 
 protected:
 
 	void OnConnected();
+
 	void OnConnectionError(const FString& ErrorMessage);
+
 	void OnClosed(int32 StatusCode, const FString& Reason, bool bWasClean);
+
 	void OnMessage(const FString& Message);
+
 	void OnMessageSent(const FString& MessageString);
 
 
 protected:
 
+	static UXGXunFeiRealTimeSTTSubsystem* RealTimeSTTSubsystemPtr;
+
+	EXGXunFeiRealTimeSTTStatus RealTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Ready;
+
+	FGuid STTAsyncID = FGuid();
+
 	FString STTAppID=TEXT("");
 
 	FString STTAPIKey=TEXT("");
 
+	FXGXunFeiInitRealTimeSTTDelegate RealTimeSTTInitDelegate;
 
-	EXGXunFeiRealTimeSTTStatus ReakTimeSTTStatus = EXGXunFeiRealTimeSTTStatus::Ready;
+	FXGXunFeiRealTimeSTTRespDelegate RealTimeSTTRespDelegate;
 
-	FXGXunFeiInitRealTimeSTTDelegate InitRealTimeSTTDelegate;
-
-	FXGXunFeiRealTimeSTTNoTranslateMiddleDelegate RealTimeSTTNoTranslateMiddleDelegate;
-
-	FXGXunFeiRealTimeSTTNoTranslateDelegate RealTimeSTTNoTranslateDelegate;
-
-	FXGXunFeiRealTimeSTTTranslateDelegate RealTimeSTTTranslateDelegate;
-
-
-
-
+	FXGXunFeiRealTimeSTTCloseDelegate RealTimeSTTCloseDelegate;
 
 	TSharedPtr<IWebSocket> Socket;
-
-	FCriticalSection SocketCriticalSection;
 
 	TSharedPtr<FXGXunFeiConsumeVoiceRunnable> ConsumeVoiceRunnable;
 
 	FRunnableThread* RunnableThread;
+
+
 };

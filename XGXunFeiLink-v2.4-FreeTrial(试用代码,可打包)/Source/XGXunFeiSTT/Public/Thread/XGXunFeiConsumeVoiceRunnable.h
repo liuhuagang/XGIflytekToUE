@@ -3,8 +3,18 @@
 
 #include "CoreMinimal.h"
 #include "HAL/Runnable.h"
+#include "HAL/ThreadSafeBool.h"
 class UXGXunFeiAudioCaptureSubsystem;
 class UXGXunFeiRealTimeSTTSubsystem;
+class UXGXunFeiVoiceDictationSubsystem;
+
+
+enum class EXGXunFeiConsumeVoiceType
+{
+	None,
+	RealtimeSTT,
+	VoiceDictation
+};
 
 /**
  * FXGXunFeiConsumeVoiceRunnable
@@ -13,8 +23,9 @@ class UXGXunFeiRealTimeSTTSubsystem;
 class FXGXunFeiConsumeVoiceRunnable :public FRunnable
 {
 public:
+
 	FXGXunFeiConsumeVoiceRunnable(FString InThreadName,
-		TWeakObjectPtr<UXGXunFeiRealTimeSTTSubsystem> InRealTimeSTTSubsystem);
+		EXGXunFeiConsumeVoiceType InConsumeVoiceType);
 
 	virtual ~FXGXunFeiConsumeVoiceRunnable();
 
@@ -27,9 +38,9 @@ public:
 
 protected:
 
-	FThreadSafeBool bIsRunning;
-	
-	FCriticalSection CriticalSection;
+	EXGXunFeiConsumeVoiceType ConsumeVoiceType = EXGXunFeiConsumeVoiceType::None;
 
-	TWeakObjectPtr<UXGXunFeiRealTimeSTTSubsystem> RealTimeSTTSubsystem;
+	FThreadSafeBool bIsRunning = true;
+
+
 };

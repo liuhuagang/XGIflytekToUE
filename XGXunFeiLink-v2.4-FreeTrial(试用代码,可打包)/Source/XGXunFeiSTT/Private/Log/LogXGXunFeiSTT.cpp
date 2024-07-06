@@ -2,3 +2,7 @@
 #include "LogXGXunFeiSTT.h"
 
 DEFINE_LOG_CATEGORY(LogXGXunFeiSTT);
+
+DEFINE_LOG_CATEGORY(LogXGXunFeiRealTimeSTT);
+
+DEFINE_LOG_CATEGORY(LogXGXunFeiVoiceDictation);

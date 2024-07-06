@@ -134,3 +134,125 @@ bool UXGXunFeiCoreBPLibrary::LoadPitcureFileToBinaryData(const FString& InAbsolu
 
 	return false;
 }
+
+void UXGXunFeiCoreBPLibrary::AssembleAuthUrl(FString IniFlyTekURL, FString InAPISecret, FString InAPIKey, FString& OutAuthURL, FString& OutProtocol, bool bGet)
+{
+
+	TArray<FString> URLParts;
+
+	IniFlyTekURL.ParseIntoArray(URLParts, TEXT("/"), true);
+
+	FString URLDomain = URLParts[1];
+
+	FString URLPath = TEXT("");
+
+	for (int32 Index = 0; Index < URLParts.Num(); Index++)
+	{
+		if (Index > 1)
+		{
+			URLPath += TEXT("/");
+			URLPath += URLParts[Index];
+
+		}
+
+	}
+
+
+	FString host = TEXT("host: ") + URLDomain + TEXT("\n");
+
+	FString HttpDate = FDateTime::Now().UtcNow().ToHttpDate();
+
+	FString date = TEXT("date: ") + HttpDate + TEXT("\n");
+
+	FString requireLine = TEXT("");
+	if (bGet)
+	{
+		requireLine = TEXT("GET ") + URLPath + TEXT(" HTTP/1.1");
+	}
+	else
+	{
+		requireLine = TEXT("POST ") + URLPath + TEXT(" HTTP/1.1");
+	}
+
+	FString signature_origin = host + date + requireLine;
+
+	FString	signature = XunFeiTTSHMACSHA256(InAPISecret, signature_origin);
+
+	FString authorization_origin =
+		FString::Printf(TEXT("api_key=\"%s\", algorithm=\"hmac-sha256\", headers=\"host date request-line\", signature=\"%s\""), *InAPIKey, *signature);
+
+	FString authorization = FBase64::Encode(authorization_origin);
+
+	OutProtocol = URLParts[0].Replace(TEXT(":"), TEXT(""));
+
+	OutAuthURL = IniFlyTekURL + FString::Printf(TEXT("?authorization=%s&date=%s&host=%s"), *authorization, *URLEncode(HttpDate), *URLDomain);
+
+
+
+}
+
+void UXGXunFeiCoreBPLibrary::AssembleAuthUrl(FString IniFlyTekURL, FString InAPISecret, FString InAPIKey, FString& OutAuthURL, FString& OutProtocol, TMap<FString, FString>& OutUpgradeHeaders)
+{
+	OutUpgradeHeaders.Empty();
+
+	TArray<FString> URLParts;
+
+	IniFlyTekURL.ParseIntoArray(URLParts, TEXT("/"), true);
+
+	FString URLDomain = URLParts[1];
+
+	FString URLPath = TEXT("");
+
+	for (int32 Index = 0; Index < URLParts.Num(); Index++)
+	{
+		if (Index > 1)
+		{
+			URLPath += TEXT("/");
+			URLPath += URLParts[Index];
+
+		}
+
+	}
+
+
+	FString host = TEXT("host: ") + URLDomain + TEXT("\n");
+
+	FString HttpDate = FDateTime::Now().UtcNow().ToHttpDate();
+
+	FString date = TEXT("date: ") + HttpDate + TEXT("\n");
+
+	FString requireLine = TEXT("GET ") + URLPath + TEXT(" HTTP/1.1");
+
+	FString signature_origin = host + date + requireLine;
+
+	FString	signature = XunFeiTTSHMACSHA256(InAPISecret, signature_origin);
+
+	FString authorization_origin =
+		FString::Printf(TEXT("api_key=\"%s\", algorithm=\"hmac-sha256\", headers=\"host date request-line\", signature=\"%s\""), *InAPIKey, *signature);
+
+	FString authorization = FBase64::Encode(authorization_origin);
+
+	OutProtocol = URLParts[0].Replace(TEXT(":"), TEXT(""));
+
+	OutAuthURL = IniFlyTekURL + FString::Printf(TEXT("?authorization=%s&date=%s&host=%s"), *authorization, *URLEncode(HttpDate), *URLDomain);
+
+
+	OutUpgradeHeaders.Add(TEXT("authorization"), authorization);
+	OutUpgradeHeaders.Add(TEXT("date"), URLEncode(HttpDate));
+	OutUpgradeHeaders.Add(TEXT("host"), URLDomain);
+}
+FString UXGXunFeiCoreBPLibrary::URLEncode(FString InURL)
+{
+	InURL.ReplaceInline(TEXT("%"), TEXT("%25"));
+	InURL.ReplaceInline(TEXT("+"), TEXT("%2B"));
+	InURL.ReplaceInline(TEXT(" "), TEXT("%20"));
+	InURL.ReplaceInline(TEXT("/"), TEXT("%2F"));
+	InURL.ReplaceInline(TEXT("?"), TEXT("%3F"));
+	InURL.ReplaceInline(TEXT("#"), TEXT("%23"));
+	InURL.ReplaceInline(TEXT("&"), TEXT("%26"));
+	InURL.ReplaceInline(TEXT("="), TEXT("%3D"));
+	InURL.ReplaceInline(TEXT(":"), TEXT("%3A"));
+	InURL.ReplaceInline(TEXT(","), TEXT("%2C"));
+
+	return InURL;
+}

@@ -28,5 +28,9 @@ public:
 
 	static bool LoadPitcureFileToBinaryData(const FString& InAbsoluteFilePath,TArray<uint8>& OutImgBinaryData);
 
+	static void AssembleAuthUrl(FString IniFlyTekURL, FString InAPISecret, FString InAPIKey, FString& OutAuthURL, FString& OutProtocol, bool bGet = true);
 
+	static void AssembleAuthUrl(FString IniFlyTekURL, FString InAPISecret, FString InAPIKey, FString& OutAuthURL, FString& OutProtocol, TMap<FString, FString>& OutUpgradeHeaders);
+	
+	static FString URLEncode(FString InURL);
 };

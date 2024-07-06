@@ -10,18 +10,24 @@ public class XGXunFeiSTT : ModuleRules
 
         PublicIncludePaths.AddRange(
             new string[] {
-                "$(ModuleDir)/Public/Type",
+                "$(ModuleDir)/Public/AsyncNode",
                 "$(ModuleDir)/Public/Subsystem",
+                "$(ModuleDir)/Public/Type",
+                "$(ModuleDir)/Public/Type/STT",
+
             }
             );
 
 
         PrivateIncludePaths.AddRange(
             new string[] {
+                "XGXunFeiSTT/Public/AsyncNode",
                 "XGXunFeiSTT/Public/Log",
                 "XGXunFeiSTT/Public/Subsystem",
                 "XGXunFeiSTT/Public/Thread",
-                "XGXunFeiSTT/Public/Type"
+                "XGXunFeiSTT/Public/Type",
+                "XGXunFeiSTT/Public/Type/STT",
+
             }
             );
 
@@ -30,7 +36,9 @@ public class XGXunFeiSTT : ModuleRules
             new string[]
             {
                 "Core",
-                "XGXunFeiCore"
+                "Json",
+                "JsonUtilities",
+                "XGXunFeiCore",
             }
             );
 
@@ -43,22 +51,28 @@ public class XGXunFeiSTT : ModuleRules
                 "AudioMixer",
                 "AudioCapture",
                 "WebSockets",
-                "Json",
-                "JsonUtilities",
+
+
 
             }
             );
 
 
+        DynamicallyLoadedModuleNames.AddRange(
+            new string[]
+            {
+
+            }
+            );
+
+        //Need to make sure Android has Launch module.
         if (Target.Platform == UnrealTargetPlatform.Android)
         {
-            PrivateDependencyModuleNames.AddRange(
-                new string[]
-                {
-                        "Launch",
+            PrivateIncludePathModuleNames.AddRange(
+                new string[] {
+                    "Launch"
                 }
             );
         }
-
     }
 }
